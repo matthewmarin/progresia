@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import logo from "../assets/logo.svg";
+import logo from "../assets/logo.png";
 import iconDown from "../assets/icon-chevron-down.svg";
 import iconUp from "../assets/icon-chevron-up.svg";
 import ellipsis from "../assets/icon-vertical-ellipsis.svg";
@@ -13,7 +13,7 @@ function Header() {
         {/* Left Side */}
 
         <div className="flex items-center space-x-2 md:space-x-4">
-          <img src={logo} alt="logo" className="h-[100px] w-[200px]" />
+          <img src={logo} alt="logo" className="h-[75px] w-[300px]" />
           <div className="flex items-center">
             <img
               src={openDropdown ? iconUp : iconDown}
@@ -27,8 +27,10 @@ function Header() {
         {/* Right Side */}
 
         <div className="flex space-x-4 items-center md:space-x-6">
-          <button className="button">+ Add New task</button>
-          <button className="button py-1 px-3 md:hidden">+</button>
+          <button className="hidden md:block button">+ Add New task</button>
+          <button className="button py-1 px-3 md:hidden bg-[#d8c648] dark:bg-[#33c6d8] rounded-full text-black dark:text-white text-lg font-semibold hover:opacity-80 duration-200">
+            +
+          </button>
           <img src={ellipsis} alt="ellipsis" className="cursor-pointer h-6" />
         </div>
       </header>

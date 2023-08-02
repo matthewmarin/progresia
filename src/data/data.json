@@ -1,8 +1,8 @@
 {
     "boards": [
       {
-        "name": "Board Name",
-        "isActive" : false,
+        "name": "Progresia",
+        "isActive" : true,
         "columns": [
           {
             "name": "Todo",

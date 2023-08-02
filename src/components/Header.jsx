@@ -3,6 +3,7 @@ import logo from "../assets/logo.svg";
 import iconDown from "../assets/icon-chevron-down.svg";
 import iconUp from "../assets/icon-chevron-up.svg";
 import ellipsis from "../assets/icon-vertical-ellipsis.svg";
+import HeaderDropdown from "./HeaderDropDown";
 
 function Header() {
   const [openDropdown, setOpenDropdown] = useState(false);
@@ -31,6 +32,8 @@ function Header() {
           <img src={ellipsis} alt="ellipsis" className="cursor-pointer h-6" />
         </div>
       </header>
+
+      {openDropdown && <HeaderDropdown setOpenDropdown={setOpenDropdown} />}
     </div>
   );
 }

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import logo from "../assets/logo.png";
-import iconDown from "../assets/icon-chevron-down.svg";
-import iconUp from "../assets/icon-chevron-up.svg";
+import { BiSolidDownArrow, BiSolidUpArrow } from "react-icons/bi";
 import ellipsis from "../assets/icon-vertical-ellipsis.svg";
 import HeaderDropdown from "./HeaderDropDown";
 
@@ -13,14 +12,19 @@ function Header() {
         {/* Left Side */}
 
         <div className="flex items-center space-x-2 md:space-x-4">
-          <img src={logo} alt="logo" className="h-[75px] w-[300px]" />
+          <img src={logo} alt="logo" className="h-[50px] w-[300px]" />
           <div className="flex items-center">
-            <img
-              src={openDropdown ? iconUp : iconDown}
-              alt="dropdown icon"
-              className="w-3  cursor-pointer md:hidden"
-              onClick={() => setOpenDropdown((state) => !state)}
-            />
+            {openDropdown ? (
+              <BiSolidUpArrow
+                className="w-5 text-xl cursor-pointer text-[#d8c648] dark:text-[#33c6d8] md:hidden"
+                onClick={() => setOpenDropdown((state) => !state)}
+              />
+            ) : (
+              <BiSolidDownArrow
+                className="w-5 text-xl  cursor-pointer text-[#d8c648] dark:text-[#33c6d8] md:hidden"
+                onClick={() => setOpenDropdown((state) => !state)}
+              />
+            )}
           </div>
         </div>
 
@@ -28,7 +32,7 @@ function Header() {
 
         <div className="flex space-x-4 items-center md:space-x-6">
           <button className="hidden md:block button">+ Add New task</button>
-          <button className="button py-1 px-3 md:hidden bg-[#d8c648] dark:bg-[#33c6d8] rounded-full text-black dark:text-white text-lg font-semibold hover:opacity-80 duration-200">
+          <button className="button py-1 px-3 md:hidden bg-[#d8c648] dark:bg-[#33c6d8] rounded-full text-black dark:text-white text-lg text-center font-semibold hover:opacity-80 duration-200">
             +
           </button>
           <img src={ellipsis} alt="ellipsis" className="cursor-pointer h-6" />

@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import boardIcon from "../assets/icon-board.svg";
 import darkIcon from "../assets/icon-dark-theme.svg";
 import lightIcon from "../assets/icon-light-theme.svg";
 import { Switch } from "@headlessui/react";
 import darkMode from "../hooks/darkMode";
+import { BsClipboard2DataFill } from "react-icons/bs";
+
 function HeaderDropdown({ setOpenDropdown }) {
   const [colorTheme, setColorTheme] = darkMode();
   const [darkSide, setDarkSide] = useState(
@@ -18,7 +19,7 @@ function HeaderDropdown({ setOpenDropdown }) {
   const boards = useSelector((state) => state.boards);
   return (
     <div
-      className="py-10 px-6 absolute left-0 right-0 bottom-[-100vh] top-28 mt-[-5px] bg-[#00000080]"
+      className="py-10 px-6 absolute left-0 right-0 bottom-[-100vh] top-28 mt-[-30px] bg-[#00000080]"
       onClick={(e) => {
         if (e.target !== e.currentTarget) {
           return;
@@ -41,13 +42,13 @@ function HeaderDropdown({ setOpenDropdown }) {
               }`}
               key={index}
             >
-              <img src={boardIcon} className="h-4" />
+              <BsClipboard2DataFill className="h-4" />
               <p className="text-lg font-bold">{board.name}</p>
             </div>
           ))}
 
           <div className="flex items-baseline space-x-2 text-black dark:text-white px-5 py-4">
-            <img src={boardIcon} className="h-4" />
+            <BsClipboard2DataFill className="h-4" />
             <p className="text-lg font-bold">Create New Board</p>
           </div>
           <div className="mx-2 p-4 space-x-2 bg-slate-100 dark:bg-[#20212c] flex justify-center items-center rounded-lg">

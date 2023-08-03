@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import logo from "../assets/logo.png";
 import { BiSolidDownArrow, BiSolidUpArrow } from "react-icons/bi";
 import ellipsis from "../assets/icon-vertical-ellipsis.svg";
-import HeaderDropdown from "./HeaderDropDown";
+import HeaderDropDown from "./HeaderDropDown";
 
 function Header() {
   const [openDropdown, setOpenDropdown] = useState(false);
@@ -39,7 +39,7 @@ function Header() {
         </div>
       </header>
 
-      {openDropdown && <HeaderDropdown setOpenDropdown={setOpenDropdown} />}
+      {openDropdown && <HeaderDropDown setOpenDropdown={setOpenDropdown} />}
     </div>
   );
 }

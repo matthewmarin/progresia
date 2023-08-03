@@ -6,7 +6,7 @@ import { Switch } from "@headlessui/react";
 import darkMode from "../hooks/darkMode";
 import { BsClipboard2DataFill } from "react-icons/bs";
 
-function HeaderDropDown({ setOpenDropdown }) {
+function HeaderDropdown({ setOpenDropdown }) {
   const [colorTheme, setColorTheme] = darkMode();
   const [darkSide, setDarkSide] = useState(
     colorTheme === "light" ? true : false
@@ -74,4 +74,4 @@ function HeaderDropDown({ setOpenDropdown }) {
   );
 }
 
-export default HeaderDropDown;
+export default HeaderDropdown;

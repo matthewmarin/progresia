@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import darkIcon from "../assets/icon-dark-theme.svg";
 import lightIcon from "../assets/icon-light-theme.svg";
 import { Switch } from "@headlessui/react";
 import darkMode from "../hooks/darkMode";
 import { BsClipboard2DataFill } from "react-icons/bs";
+import boardsSlice from "../redux/boardsSlice";
 
 function HeaderDropdown({ setOpenDropdown, setBoardModalOpen }) {
+  const dispatch = useDispatch();
   const [colorTheme, setColorTheme] = darkMode();
   const [darkSide, setDarkSide] = useState(
     colorTheme === "light" ? true : false
@@ -38,9 +40,12 @@ function HeaderDropdown({ setOpenDropdown, setBoardModalOpen }) {
             <div
               className={`flex items-baseline dark:text-white space-x-2 px-5 py-4  ${
                 board.isActive &&
-                "bg-[#d8c648] dark:bg-[#33c6d8] rounded-r-full text-black mr-8"
+                "bg-[#d8c648] dark:bg-[#33c6d8] rounded-r-full text-black mr-8 transition:all"
               }`}
               key={index}
+              onClick={() => {
+                dispatch(boardsSlice.actions.setBoardActive({ index }));
+              }}
             >
               <BsClipboard2DataFill className="h-4" />
               <p className="text-lg font-bold">{board.name}</p>

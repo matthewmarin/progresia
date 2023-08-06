@@ -4,9 +4,16 @@ import { BiSolidDownArrow, BiSolidUpArrow } from "react-icons/bi";
 import ellipsis from "../assets/icon-vertical-ellipsis.svg";
 import AddEditBoard from "../modal/AddEditBoard";
 import HeaderDropdown from "./HeaderDropdown";
+import { useDispatch, useSelector } from "react-redux";
 
 function Header({ boardModalOpen, setBoardModalOpen }) {
+  const dispatch = useDispatch();
+
   const [openDropdown, setOpenDropdown] = useState(false);
+  const [boardType, setBoardType] = useState("add");
+
+  const boards = useSelector((state) => state.boards);
+  const board = boards.find((board) => board.isActive);
   return (
     <div className="p-4 fixed left-0 bg-white dark:bg-[#2b2c37] z-50 right-0">
       <header className="flex justify-between dark:text-white items-center">
@@ -15,6 +22,12 @@ function Header({ boardModalOpen, setBoardModalOpen }) {
         <div className="flex items-center space-x-2 md:space-x-4">
           <img src={logo} alt="logo" className="h-[50px] w-[300px]" />
           <div className="flex items-center">
+            <h3
+              className="truncate max-w-[200px] md:text-2xl text-xl
+            font-bold md:ml-20 font-sans"
+            >
+              {board.name}
+            </h3>
             {openDropdown ? (
               <BiSolidUpArrow
                 className="w-5 text-xl cursor-pointer text-[#d8c648] dark:text-[#33c6d8] md:hidden"
@@ -49,7 +62,9 @@ function Header({ boardModalOpen, setBoardModalOpen }) {
         />
       )}
 
-      {boardModalOpen && <AddEditBoard setBoardModalOpen={setBoardModalOpen} />}
+      {boardModalOpen && (
+        <AddEditBoard type={boardType} setBoardModalOpen={setBoardModalOpen} />
+      )}
     </div>
   );
 }

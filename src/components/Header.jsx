@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import logo from "../assets/logo.png";
 import { BiSolidDownArrow, BiSolidUpArrow } from "react-icons/bi";
 import ellipsis from "../assets/icon-vertical-ellipsis.svg";
+import AddEditBoard from "../modal/AddEditBoard";
 import HeaderDropdown from "./HeaderDropdown";
 
-function Header() {
+function Header({ boardModalOpen, setBoardModalOpen }) {
   const [openDropdown, setOpenDropdown] = useState(false);
   return (
     <div className="p-4 fixed left-0 bg-white dark:bg-[#2b2c37] z-50 right-0">
@@ -31,7 +32,9 @@ function Header() {
         {/* Right Side */}
 
         <div className="flex space-x-4 items-center md:space-x-6">
-          <button className="hidden md:block button">+ Add New task</button>
+          <button className="hidden md:block button bg-[#d8c648] dark:bg-[#33c6d8] py-2 px-4 rounded-full  text-black dark:text-white text-lg font-semibold hover:opacity-80 duration-200 ">
+            + Add New task
+          </button>
           <button className="button py-1 px-3 md:hidden bg-[#d8c648] dark:bg-[#33c6d8] rounded-full text-black dark:text-white text-lg text-center font-semibold hover:opacity-80 duration-200">
             +
           </button>
@@ -39,7 +42,14 @@ function Header() {
         </div>
       </header>
 
-      {openDropdown && <HeaderDropdown setOpenDropdown={setOpenDropdown} />}
+      {openDropdown && (
+        <HeaderDropdown
+          setBoardModalOpen={setBoardModalOpen}
+          setOpenDropdown={setOpenDropdown}
+        />
+      )}
+
+      {boardModalOpen && <AddEditBoard setBoardModalOpen={setBoardModalOpen} />}
     </div>
   );
 }

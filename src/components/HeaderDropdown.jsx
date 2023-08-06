@@ -6,7 +6,7 @@ import { Switch } from "@headlessui/react";
 import darkMode from "../hooks/darkMode";
 import { BsClipboard2DataFill } from "react-icons/bs";
 
-function HeaderDropdown({ setOpenDropdown }) {
+function HeaderDropdown({ setOpenDropdown, setBoardModalOpen }) {
   const [colorTheme, setColorTheme] = darkMode();
   const [darkSide, setDarkSide] = useState(
     colorTheme === "light" ? true : false
@@ -29,14 +29,14 @@ function HeaderDropdown({ setOpenDropdown }) {
     >
       {/* DropDown Modal */}
 
-      <div className="bg-white dark:bg-[#2b2c37] shadow-md shadow-[#364e7e1a] w-full py-4 rounded-xl">
+      <div className="bg-white dark:bg-[#2b2c37] shadow-md shadow-[#364e7e1a] w-full py-4 rounded-xl ">
         <h3 className="dark:text-gray-300 text-gray-600 font-semibold mx-4 mb-8">
           All Boards ({boards?.length})
         </h3>
         <div>
           {boards.map((board, index) => (
             <div
-              className={`flex items-baseline dark:text-white space-x-2 px-5 py-4 ${
+              className={`flex items-baseline dark:text-white space-x-2 px-5 py-4  ${
                 board.isActive &&
                 "bg-[#d8c648] dark:bg-[#33c6d8] rounded-r-full text-black mr-8"
               }`}
@@ -47,8 +47,14 @@ function HeaderDropdown({ setOpenDropdown }) {
             </div>
           ))}
 
-          <div className="flex items-baseline space-x-2 text-black dark:text-white px-5 py-4">
-            <BsClipboard2DataFill className="h-4" />
+          <div
+            className="flex items-baseline space-x-2 text-black dark:text-white px-5 py-4 cursor-pointer rounded-r-full mr-8 hover:bg-[#ff6f70]"
+            onClick={() => {
+              setBoardModalOpen(true);
+              setOpenDropdown(false);
+            }}
+          >
+            <BsClipboard2DataFill className="h-4 " />
             <p className="text-lg font-bold">Create New Board</p>
           </div>
           <div className="mx-2 p-4 space-x-2 bg-slate-100 dark:bg-[#20212c] flex justify-center items-center rounded-lg">

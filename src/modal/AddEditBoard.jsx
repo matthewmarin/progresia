@@ -41,7 +41,7 @@ function AddEditBoard({ setBoardModalOpen, type }) {
     return true;
   };
 
-  const onsubmit = (type) => {
+  const onSubmit = (type) => {
     setBoardModalOpen(false);
     if (type === "add") {
       dispatch(boardsSlice.actions.addBoard({ name, newColumn }));
@@ -132,7 +132,7 @@ function AddEditBoard({ setBoardModalOpen, type }) {
             text-black bg-[#d8c648] dark:bg-[#33c6d8] mt-2 py-2 rounded-full"
             onClick={() => {
               const isValid = validate();
-              if (isValid === true) onsubmit(type);
+              if (isValid === true) onSubmit(type);
             }}
           >
             {type === "add" ? "Create new Board" : "Save Changes"}

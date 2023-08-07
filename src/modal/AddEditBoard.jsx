@@ -72,7 +72,7 @@ function AddEditBoard({ setBoardModalOpen, type }) {
 
         {/* Task Name */}
 
-        <div className="mt-8 flex flex-col space-y-3">
+        <div className="mt-8 flex flex-col space-y-3 ">
           <label className="text-sm dark:text-white text-gray-500">
             Board Name
           </label>

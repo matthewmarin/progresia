@@ -31,7 +31,7 @@ function HeaderDropdown({ setOpenDropdown, setBoardModalOpen }) {
     >
       {/* DropDown Modal */}
 
-      <div className="bg-white dark:bg-[#2b2c37] shadow-md shadow-[#364e7e1a] w-full py-4 rounded-xl ">
+      <div className="bg-white dark:bg-[#2b2c37] shadow-md shadow-[#364e7e1a] w-full py-4 rounded-xl">
         <h3 className="dark:text-gray-300 text-gray-600 font-semibold mx-4 mb-8">
           All Boards ({boards?.length})
         </h3>
@@ -60,7 +60,7 @@ function HeaderDropdown({ setOpenDropdown, setBoardModalOpen }) {
             }}
           >
             <BsClipboard2DataFill className="h-4 " />
-            <p className="text-lg font-bold">Create New Board</p>
+            <p className="text-md font-bold">Create New Board</p>
           </div>
           <div className="mx-2 p-4 space-x-2 bg-slate-100 dark:bg-[#20212c] flex justify-center items-center rounded-lg">
             <img src={lightIcon} />

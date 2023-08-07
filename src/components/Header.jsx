@@ -5,11 +5,13 @@ import ellipsis from "../assets/icon-vertical-ellipsis.svg";
 import AddEditBoard from "../modal/AddEditBoard";
 import HeaderDropdown from "./HeaderDropdown";
 import { useDispatch, useSelector } from "react-redux";
+import AddEditTask from "../modal/AddEditTask";
 
 function Header({ boardModalOpen, setBoardModalOpen }) {
   const dispatch = useDispatch();
 
   const [openDropdown, setOpenDropdown] = useState(false);
+  const [openAddEditTask, setOpenAddEditTask] = useState(false);
   const [boardType, setBoardType] = useState("add");
 
   const boards = useSelector((state) => state.boards);
@@ -19,11 +21,11 @@ function Header({ boardModalOpen, setBoardModalOpen }) {
       <header className="flex justify-between dark:text-white items-center">
         {/* Left Side */}
 
-        <div className="flex items-center space-x-2 md:space-x-4">
-          <img src={logo} alt="logo" className="h-[50px] w-[300px]" />
+        <div className="flex items-center space-x-2 md:space-x-4 uppercase">
+          <img src={logo} alt="logo" className="h-[50px] w-[220px]" />
           <div className="flex items-center">
             <h3
-              className="truncate max-w-[200px] md:text-2xl text-xl
+              className="truncate max-w-[200px] ml-3 mr-3 md:text-2xl text-xl
             font-bold md:ml-20 font-sans"
             >
               {board.name}
@@ -48,7 +50,12 @@ function Header({ boardModalOpen, setBoardModalOpen }) {
           <button className="hidden md:block button bg-[#d8c648] dark:bg-[#33c6d8] py-2 px-4 rounded-full  text-black dark:text-white text-lg font-semibold hover:opacity-80 duration-200 ">
             + Add New task
           </button>
-          <button className="button py-1 px-3 md:hidden bg-[#d8c648] dark:bg-[#33c6d8] rounded-full text-black dark:text-white text-lg text-center font-semibold hover:opacity-80 duration-200">
+          <button
+            onClick={() => {
+              setOpenAddEditTask((state) => !state);
+            }}
+            className="button py-1 px-3 md:hidden bg-[#d8c648] dark:bg-[#33c6d8] rounded-full text-black dark:text-white text-lg text-center font-semibold hover:opacity-80 duration-200"
+          >
             +
           </button>
           <img src={ellipsis} alt="ellipsis" className="cursor-pointer h-6" />
@@ -64,6 +71,9 @@ function Header({ boardModalOpen, setBoardModalOpen }) {
 
       {boardModalOpen && (
         <AddEditBoard type={boardType} setBoardModalOpen={setBoardModalOpen} />
+      )}
+      {openAddEditTask && (
+        <AddEditTask setOpenAddEditTask={setOpenAddEditTask} device="mobile" />
       )}
     </div>
   );

@@ -1,7 +1,7 @@
 const boardData = {
   boards: [
     {
-      name: "Progresia",
+      name: "Web Design",
       isActive: true,
       columns: [
         {

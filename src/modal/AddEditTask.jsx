@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 function AddEditTask({ type, device, setOpenAddEditTask }) {
   const [title, setTitle] = useState("");
+  const [taskDesc, setTaskDesc] = useState("");
 
   return (
     <div
@@ -38,6 +39,21 @@ function AddEditTask({ type, device, setOpenAddEditTask }) {
           border border-gray-600 focus:outline-[#d8c648] dark:focus:outline-[#33c6d8] ring-0"
             type="text"
             placeholder="e.g Take a lunch break"
+          />
+        </div>
+
+        {/* Description */}
+        <div className="mt-8 flex flex-col space-y-1">
+          <label className="text-sm dark:text-white text-gray-500">
+            Description
+          </label>
+          <textarea
+            value={taskDesc}
+            onChange={(e) => setTaskDesc(e.target.value)}
+            className="bg-transparent px-4 py-2 outline-none min-h-[200px] focus:border-0 rounded-md text-sm
+          border border-gray-600 focus:outline-[#d8c648] dark:focus:outline-[#33c6d8] ring-0"
+            type="text"
+            placeholder="Taking a 1-hour lunch break for relaxation, nourishment, and recharging during the workday."
           />
         </div>
       </div>

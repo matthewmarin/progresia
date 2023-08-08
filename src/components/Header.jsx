@@ -6,26 +6,39 @@ import AddEditBoard from "../modal/AddEditBoard";
 import HeaderDropdown from "./HeaderDropdown";
 import { useDispatch, useSelector } from "react-redux";
 import AddEditTask from "../modal/AddEditTask";
+import EllipsisMenu from "./EllipsisMenu";
 
 function Header({ boardModalOpen, setBoardModalOpen }) {
   const dispatch = useDispatch();
 
   const [openDropdown, setOpenDropdown] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [openAddEditTask, setOpenAddEditTask] = useState(false);
+  const [isEllipsisOpen, setIsEllipsisOpen] = useState(false);
   const [boardType, setBoardType] = useState("add");
 
   const boards = useSelector((state) => state.boards);
   const board = boards.find((board) => board.isActive);
+
+  const setOpenEditModal = () => {
+    setBoardModalOpen(true);
+    setIsEllipsisOpen(false);
+  };
+
+  const setOpenDeleteModal = () => {
+    isDeleteModalOpen(true);
+    setIsEllipsisOpen(false);
+  };
   return (
     <div className="p-4 fixed left-0 bg-white dark:bg-[#2b2c37] z-50 right-0">
       <header className="flex justify-between dark:text-white items-center">
         {/* Left Side */}
 
         <div className="flex items-center space-x-2 md:space-x-4 uppercase">
-          <img src={logo} alt="logo" className="h-[50px] w-[220px]" />
+          <img src={logo} alt="logo" className="h-[50px] w-[130px]" />
           <div className="flex items-center">
             <h3
-              className="truncate max-w-[200px] ml-3 mr-3 md:text-2xl text-xl
+              className="truncate max-w-[200px] ml-2 mr-2 md:text-2xl text-lg
             font-bold md:ml-20 font-sans"
             >
               {board.name}
@@ -58,7 +71,24 @@ function Header({ boardModalOpen, setBoardModalOpen }) {
           >
             +
           </button>
-          <img src={ellipsis} alt="ellipsis" className="cursor-pointer h-6" />
+          <img
+            src={ellipsis}
+            onClick={() => {
+              setBoardType("edit");
+              setOpenDropdown(false);
+              setIsEllipsisOpen((state) => !state);
+            }}
+            alt="ellipsis"
+            className="cursor-pointer h-6"
+          />
+
+          {isEllipsisOpen && (
+            <EllipsisMenu
+              setOpenDeleteModal={setIsDeleteModalOpen}
+              setOpenEditModal={setOpenEditModal}
+              type="Boards"
+            />
+          )}
         </div>
       </header>
 

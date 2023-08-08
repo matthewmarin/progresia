@@ -6,7 +6,9 @@ const boardsSlice = createSlice({
   initialState: boardData.boards,
   reducers: {
     addBoard: (state, action) => {
-      const isActive = state.length > 0 ? false : true;
+      const newState = [...state];
+
+      const isActive = newState.length > 0 ? false : true;
       const payload = action.payload;
       const board = {
         name: payload.name,
@@ -14,17 +16,27 @@ const boardsSlice = createSlice({
         columns: [],
       };
       board.columns = payload.newColumns;
-      state.push(board);
+      newState.push(board);
+
+      return newState;
     },
     editBoard: (state, action) => {
+      const newState = [...state];
       const payload = action.payload;
-      const board = state.find((board) => board.isActive);
-      board.name = payload.name;
-      board.columns = payload.newColumns;
+      const boardIndex = newState.findIndex((board) => board.isActive);
+      newState[boardIndex] = {
+        name: payload.name,
+        columns: payload.newColumns,
+        isActive: newState[boardIndex].isActive,
+      };
+
+      return newState;
     },
     deleteBoard: (state) => {
-      const board = state.find((board) => board.isActive);
-      state.splice(state.indexOf(board), 1);
+      const newState = [...state];
+      const board = newState.find((board) => board.isActive);
+      newState.splice(newState.indexOf(board), 1);
+      return newState;
     },
     setBoardActive: (state, action) => {
       state.map((board, index) => {

@@ -7,7 +7,6 @@ const boardsSlice = createSlice({
   reducers: {
     addBoard: (state, action) => {
       const newState = [...state];
-
       const isActive = newState.length > 0 ? false : true;
       const payload = action.payload;
       const board = {
@@ -54,6 +53,7 @@ const boardsSlice = createSlice({
       const column = board.columns.find((col, index) => index === newColIndex);
       column.tasks.push(task);
     },
+
     editTask: (state, action) => {
       const {
         title,

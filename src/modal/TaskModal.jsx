@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import ellipsis from "../assets/icon-vertical-ellipsis.svg";
 import EllipsisMenu from "../components/EllipsisMenu";
 import Subtask from "../components/Subtask";
+import boardsSlice from "../redux/boardsSlice";
 
 function TaskModal({ colIndex, taskIndex, setIsTaskModalOpen }) {
   const dispatch = useDispatch();
@@ -23,13 +24,35 @@ function TaskModal({ colIndex, taskIndex, setIsTaskModalOpen }) {
   const [status, setStatus] = useState(task.status);
   const [newColIndex, setNewColIndex] = useState(columns.indexOf(col));
   const [ellipsisMenuOpen, setEllipsisMenuOpen] = useState(false);
+  const [isDeleteModal, setIsDeleteModal] = useState(false);
 
   const setOpenEditModal = () => {};
 
   const setOpenDeleteModal = () => {};
 
+  const onClose = (e) => {
+    if (e.target !== e.currentTarget) {
+      return;
+    }
+    dispatch(
+      boardsSlice.actions.setTaskStatus({
+        taskIndex,
+        colIndex,
+        newColIndex,
+        status,
+      })
+    );
+    setIsTaskModalOpen(false);
+  };
+
+  const onChange = (e) => {
+    setStatus(e.target.value);
+    setNewColIndex(e.target.selectedIndex);
+  };
+
   return (
     <div
+      onClick={onClose}
       className="fixed right-0 left-0 top-0 px-2 py-4 overflow-scroll scrollbar-hide
       z-50 bottom-0 justify-center items-center flex bg-[#00000080]"
     >
@@ -78,6 +101,24 @@ function TaskModal({ colIndex, taskIndex, setIsTaskModalOpen }) {
               />
             );
           })}
+        </div>
+
+        {/* Current Status Section */}
+
+        <div className="mt-8 flex flex-col space-y-3">
+          <label className="text-sm dark:text-white text-gray-500">
+            Current Status
+          </label>
+          <select
+            className="select-status flex flex-grow px-4 py-2 rounded-md text-sm bg-transparent focus:border-0
+          border border-gray-300 outline-none focus:outline-[#d8c648] dark:focus:outline-[#33c6d8] text-black dark:text-gray-100"
+            value={status}
+            onChange={onChange}
+          >
+            {columns.map((column, index) => (
+              <option key={index}>{column.name}</option>
+            ))}
+          </select>
         </div>
       </div>
     </div>

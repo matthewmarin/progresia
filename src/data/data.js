@@ -2,7 +2,7 @@ const boardData = {
   boards: [
     {
       name: "Web Design",
-      isActive: true,
+      isActive: false,
       columns: [
         {
           name: "Todo",

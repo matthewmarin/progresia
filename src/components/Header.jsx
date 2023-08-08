@@ -74,7 +74,12 @@ function Header({ boardModalOpen, setBoardModalOpen }) {
         {/* Right Side */}
 
         <div className="flex space-x-4 items-center md:space-x-6">
-          <button className="hidden md:block button bg-[#d8c648] dark:bg-[#33c6d8] py-2 px-4 rounded-full  text-black dark:text-white text-lg font-semibold hover:opacity-80 duration-200 ">
+          <button
+            onClick={() => {
+              setOpenAddEditTask((state) => !state);
+            }}
+            className="hidden md:block button bg-[#d8c648] dark:bg-[#33c6d8] py-2 px-4 rounded-full  text-black dark:text-white text-lg font-semibold hover:opacity-80 duration-200 "
+          >
             + Add New task
           </button>
           <button

@@ -8,7 +8,7 @@ const boardData = {
           name: "Todo",
           tasks: [
             {
-              title: "Board Title",
+              title: "Todo Title",
               description: "",
               status: "Todo",
               subtasks: [
@@ -27,7 +27,7 @@ const boardData = {
               ],
             },
             {
-              title: "Board Title",
+              title: "Todo Title",
               description: "",
               status: "Todo",
               subtasks: [
@@ -38,7 +38,7 @@ const boardData = {
               ],
             },
             {
-              title: "Board Title",
+              title: "Todo Title",
               description: "",
               status: "Todo",
               subtasks: [
@@ -53,7 +53,7 @@ const boardData = {
               ],
             },
             {
-              title: "Board Title",
+              title: "Todo Title",
               description: "Board Description",
               status: "Todo",
               subtasks: [

@@ -76,7 +76,7 @@ function Header({ boardModalOpen, setBoardModalOpen }) {
         <div className="flex space-x-4 items-center md:space-x-6">
           <button
             onClick={() => {
-              setOpenAddEditTask((state) => !state);
+              setOpenAddEditTask((prevState) => !prevState);
             }}
             className="hidden md:block button bg-[#d8c648] dark:bg-[#33c6d8] py-2 px-4 rounded-full  text-black dark:text-white text-lg font-semibold hover:opacity-80 duration-200 "
           >
@@ -84,7 +84,7 @@ function Header({ boardModalOpen, setBoardModalOpen }) {
           </button>
           <button
             onClick={() => {
-              setOpenAddEditTask((state) => !state);
+              setOpenAddEditTask((prevState) => !prevState);
             }}
             className="button py-1 px-3 md:hidden bg-[#d8c648] dark:bg-[#33c6d8] rounded-full text-black dark:text-white text-lg text-center font-semibold hover:opacity-80 duration-200"
           >
@@ -95,7 +95,7 @@ function Header({ boardModalOpen, setBoardModalOpen }) {
             onClick={() => {
               setBoardType("edit");
               setOpenDropdown(false);
-              setIsEllipsisOpen((state) => !state);
+              setIsEllipsisOpen((prevState) => !prevState);
             }}
             alt="ellipsis"
             className="cursor-pointer h-6"
@@ -119,7 +119,11 @@ function Header({ boardModalOpen, setBoardModalOpen }) {
       )}
 
       {boardModalOpen && (
-        <AddEditBoard type={boardType} setBoardModalOpen={setBoardModalOpen} />
+        <AddEditBoard
+          type={boardType}
+          setBoardModalOpen={setBoardModalOpen}
+          setBoardType={setBoardType}
+        />
       )}
       {openAddEditTask && (
         <AddEditTask

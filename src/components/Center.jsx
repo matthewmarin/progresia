@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
+import { useSelector } from "react-redux";
+import Column from "./Column";
 
 function Center({ boardModalOpen, setBoardModalOpen }) {
   const [windowSize, setWindowSize] = useState([
@@ -8,6 +10,10 @@ function Center({ boardModalOpen, setBoardModalOpen }) {
   ]);
 
   const [isSideBarOpen, setIsSideBarOpen] = useState(true);
+
+  const boards = useSelector((state) => state.boards);
+  const board = boards.find((board) => board.isActive === true);
+  const columns = board.columns;
 
   useEffect(() => {
     const handleWindowResize = () => {
@@ -31,6 +37,9 @@ function Center({ boardModalOpen, setBoardModalOpen }) {
       {windowSize[0] >= 768 && <Sidebar />}
 
       {/* Column Section */}
+      {columns.map((col, index) => (
+        <Column key={index} colIndex={index} />
+      ))}
     </div>
   );
 }

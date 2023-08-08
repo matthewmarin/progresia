@@ -7,6 +7,8 @@ import HeaderDropdown from "./HeaderDropdown";
 import { useDispatch, useSelector } from "react-redux";
 import AddEditTask from "../modal/AddEditTask";
 import EllipsisMenu from "./EllipsisMenu";
+import DeleteModal from "../modal/DeleteModal";
+import boardsSlice from "../redux/boardsSlice";
 
 function Header({ boardModalOpen, setBoardModalOpen }) {
   const dispatch = useDispatch();
@@ -26,8 +28,20 @@ function Header({ boardModalOpen, setBoardModalOpen }) {
   };
 
   const setOpenDeleteModal = () => {
-    isDeleteModalOpen(true);
+    setIsDeleteModalOpen(true);
     setIsEllipsisOpen(false);
+  };
+
+  const onDeleteBtnClick = () => {
+    dispatch(boardsSlice.actions.deleteBoard());
+    dispatch(boardsSlice.actions.setBoardActive({ index: 0 }));
+    setIsDeleteModalOpen(false);
+  };
+
+  const onDropdownClick = () => {
+    setOpenDropdown((state) => !state);
+    setIsEllipsisOpen(false);
+    setBoardType("add");
   };
   return (
     <div className="p-4 fixed left-0 bg-white dark:bg-[#2b2c37] z-50 right-0">
@@ -51,7 +65,7 @@ function Header({ boardModalOpen, setBoardModalOpen }) {
             ) : (
               <BiSolidDownArrow
                 className="w-5 text-xl  cursor-pointer text-[#d8c648] dark:text-[#33c6d8] md:hidden"
-                onClick={() => setOpenDropdown((state) => !state)}
+                onClick={onDropdownClick}
               />
             )}
           </div>
@@ -84,7 +98,7 @@ function Header({ boardModalOpen, setBoardModalOpen }) {
 
           {isEllipsisOpen && (
             <EllipsisMenu
-              setOpenDeleteModal={setIsDeleteModalOpen}
+              setOpenDeleteModal={setOpenDeleteModal}
               setOpenEditModal={setOpenEditModal}
               type="Boards"
             />
@@ -107,6 +121,14 @@ function Header({ boardModalOpen, setBoardModalOpen }) {
           setOpenAddEditTask={setOpenAddEditTask}
           device="mobile"
           type="add"
+        />
+      )}
+      {isDeleteModalOpen && (
+        <DeleteModal
+          setIsDeleteModalOpen={setIsDeleteModalOpen}
+          onDeleteBtnClick={onDeleteBtnClick}
+          title={board.name}
+          type="board"
         />
       )}
     </div>

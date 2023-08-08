@@ -189,7 +189,7 @@ function AddEditTask({
             value={status}
             onChange={(e) => onchangeStatus(e)}
             className="select-status flex flex-grow px-4 py-2 rounded-md text-sm bg-transparent focus:border-0
-          border border-gray-300 outline-none focus:outline-[#d8c648] dark:focus:outline-[#33c6d8] text-white dark:text-gray-100 "
+          border border-gray-300 outline-none focus:outline-[#d8c648] dark:focus:outline-[#33c6d8] text-black dark:text-gray-100 "
           >
             {columns.map((columns, index) => (
               <option className="text-black " value={columns.name} key={index}>

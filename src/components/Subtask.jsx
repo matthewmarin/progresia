@@ -21,9 +21,7 @@ function Subtask({ index, taskIndex, colIndex }) {
   return (
     <div
       className={`w-full flex hover:bg-[#d8c648] dark:hover:bg-[#33c6d8] rounded-md
-      relative items-center justify-start dark:bg-[#20212c] p-3 gap-4 bg-[f4f7fd] ${
-        checked ? "line-through opacity-30" : ""
-      }`}
+      relative items-center justify-start dark:bg-[#20212c] p-3 gap-4 bg-[f4f7fd]`}
     >
       <input
         type="checkbox"
@@ -31,7 +29,9 @@ function Subtask({ index, taskIndex, colIndex }) {
         checked={checked}
         onChange={onChange}
       />
-      <p>{subtask.title}</p>
+      <p className={`${checked ? "line-through opacity-30" : ""}`}>
+        {subtask.title}
+      </p>
     </div>
   );
 }

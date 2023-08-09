@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Task from "./Task";
 
 function Column({ colIndex }) {
-  const colors = [
+  const allColors = [
     "bg-red-500",
     "bg-orange-500",
     "bg-blue-500",
@@ -16,21 +16,29 @@ function Column({ colIndex }) {
     "bg-sky-500",
   ];
 
-  const [color, setColor] = useState(null);
-
   const dispatch = useDispatch();
   const boards = useSelector((state) => state.boards);
   const board = boards.find((board) => board.isActive);
   const col = board.columns.find((col, i) => i === colIndex);
 
+  const [usedColors, setUsedColors] = useState([]);
+  const availableColors = allColors.filter(
+    (color) => !usedColors.includes(color)
+  );
+
   useEffect(() => {
-    setColor(shuffle(colors).pop());
-  }, [dispatch]);
+    setUsedColors((prevUsedColors) => [...prevUsedColors, col.color]);
+  }, [col.color]);
+
+  const randomColor =
+    availableColors.length > 0
+      ? availableColors[Math.floor(Math.random() * availableColors.length)]
+      : "";
 
   return (
     <div className="scrollbar-hide mx-5 pt-[90px] min-w-[280px]">
       <p className="font-semibold flex items-center gap-2 tracking-widest md:tracking-[.2em] text-[#828fa3]">
-        <span className={`rounded-full w-4 h-4 ${color}`} />
+        <span className={`rounded-full w-4 h-4 ${randomColor}`} />
         {col.name} ({col.tasks ? col.tasks.length : 0})
       </p>
       {col.tasks &&

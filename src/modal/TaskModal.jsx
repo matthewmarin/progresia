@@ -5,6 +5,7 @@ import EllipsisMenu from "../components/EllipsisMenu";
 import Subtask from "../components/Subtask";
 import boardsSlice from "../redux/boardsSlice";
 import DeleteModal from "./DeleteModal";
+import AddEditTask from "./AddEditTask";
 
 function TaskModal({ colIndex, taskIndex, setIsTaskModalOpen }) {
   const dispatch = useDispatch();
@@ -141,6 +142,15 @@ function TaskModal({ colIndex, taskIndex, setIsTaskModalOpen }) {
           onDeleteBtnClick={onDeleteBtnClick}
           title={task.title}
           type="task"
+        />
+      )}
+      {isAddTaskModalOpen && (
+        <AddEditTask
+          setOpenAddEditTask={setIsAddTaskModalOpen}
+          type="edit"
+          taskIndex={taskIndex}
+          pervColIndex={colIndex}
+          setIsTaskModalOpen={setIsTaskModalOpen}
         />
       )}
     </div>

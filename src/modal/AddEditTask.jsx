@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { RxCross1 } from "react-icons/rx";
 import { useSelector } from "react-redux";
@@ -9,27 +9,45 @@ function AddEditTask({
   type,
   device,
   setOpenAddEditTask,
+  setIsTaskModalOpen,
   taskIndex,
-  pervColIndex = 0,
+  prevColIndex = 0,
 }) {
   const dispatch = useDispatch();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [isValid, setIsValid] = useState("true");
-
-  const board = useSelector((state) => state.boards).find(
-    (board) => board.isActive
-  );
+  const boards = useSelector((state) => state.boards);
+  const board = boards.find((board) => board.isActive);
 
   const columns = board.columns;
-  const col = columns.find((col, index) => index === pervColIndex);
-  const [status, setStatus] = useState(columns[pervColIndex].name);
-  const [newColIndex, setNewColIndex] = useState(pervColIndex);
+  const col = columns.find((col, index) => index === prevColIndex);
+  const [status, setStatus] = useState(columns[prevColIndex].name);
+  const [newColIndex, setNewColIndex] = useState(prevColIndex);
+
+  const task = col ? col.tasks.find((task, index) => index === taskIndex) : [];
 
   const [subtasks, setSubtasks] = useState([
     { title: "", isCompleted: false, id: uuidv4() },
     { title: "", isCompleted: false, id: uuidv4() },
   ]);
+
+  useEffect(() => {
+    if (type === "edit" && col) {
+      const task = col.tasks.find((task, index) => index === taskIndex);
+      if (task) {
+        setTitle(task.title);
+        setDescription(task.description);
+        setStatus(columns[prevColIndex]?.name || "");
+        setSubtasks(
+          task.subtasks.map((subtask) => ({
+            ...subtask,
+            id: uuidv4(),
+          }))
+        );
+      }
+    }
+  }, [col, taskIndex, type, columns, prevColIndex]);
 
   const onChange = (id, newValue) => {
     setSubtasks((pervState) => {
@@ -82,7 +100,7 @@ function AddEditTask({
           subtasks,
           status,
           taskIndex,
-          pervColIndex,
+          prevColIndex,
           newColIndex,
         })
       );

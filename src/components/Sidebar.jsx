@@ -109,7 +109,10 @@ function Sidebar({ setIsSideBarOpen, isSideBarOpen }) {
               {isSideBarOpen && <p> Hide Sidebar</p>}
             </div>
           ) : (
-            <div className="absolute p-5">
+            <div
+              onClick={() => setIsSideBarOpen((state) => !state)}
+              className="absolute p-4 ml-1"
+            >
               <BiSolidShow />
             </div>
           )}

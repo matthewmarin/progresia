@@ -12,7 +12,7 @@ function Subtask({ index, taskIndex, colIndex }) {
   const subtask = task.subtasks.find((subtask, i) => i === index);
   const checked = subtask.isCompleted;
 
-  const onChange = () => {
+  const onDivClick = () => {
     dispatch(
       boardsSlice.actions.setSubtaskCompleted({ index, taskIndex, colIndex })
     );
@@ -21,13 +21,14 @@ function Subtask({ index, taskIndex, colIndex }) {
   return (
     <div
       className={`w-full flex hover:bg-[#d8c648] dark:hover:bg-[#33c6d8] rounded-md
-      relative items-center justify-start dark:bg-[#20212c] p-3 gap-4 bg-[f4f7fd]`}
+      relative items-center justify-start dark:bg-[#20212c] p-3 gap-4 bg-[f4f7fd] cursor-pointer`}
+      onClick={onDivClick}
     >
       <input
         type="checkbox"
         className="w-4 h-4 accent-red-700 cursor-pointer"
         checked={checked}
-        onChange={onChange}
+        onChange={() => {}}
       />
       <p className={`${checked ? "line-through opacity-30" : ""}`}>
         {subtask.title}

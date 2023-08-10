@@ -19,7 +19,7 @@ function EmptyBoard({ type }) {
         {type === "edit" ? "+ Add New Column" : "+ Add New Board"}
       </button>
       {isBoardModalOpen && (
-        <AddEditBoard type={type} setIsBoardModalOpen={setIsBoardModalOpen} />
+        <AddEditBoard type={type} setBoardModalOpen={setIsBoardModalOpen} />
       )}
     </div>
   );

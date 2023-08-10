@@ -3,11 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import darkMode from "../hooks/darkMode";
 import boardsSlice from "../redux/boardsSlice";
 import { BsClipboard2DataFill } from "react-icons/bs";
-import darkIcon from "../assets/icon-dark-theme.svg";
-import lightIcon from "../assets/icon-light-theme.svg";
 import { Switch } from "@headlessui/react";
 import { BiSolidHide, BiSolidShow } from "react-icons/bi";
 import AddEditBoard from "../modal/AddEditBoard";
+import { MdLightMode, MdDarkMode } from "react-icons/md";
 
 function Sidebar({ setIsSideBarOpen, isSideBarOpen }) {
   const dispatch = useDispatch();
@@ -16,10 +15,12 @@ function Sidebar({ setIsSideBarOpen, isSideBarOpen }) {
     colorTheme === "light" ? true : false
   );
 
-  const toggleDarkMode = (checked) => {
-    setColorTheme(colorTheme);
-    setDarkSide(checked);
+  const toggleDarkMode = () => {
+    const newDarkMode = !darkSide;
+    setColorTheme(newDarkMode ? "dark" : "light");
+    setDarkSide(newDarkMode);
   };
+
   const boards = useSelector((state) => state.boards);
 
   const [isBoardModalOpen, setIsBoardModalOpen] = useState(false);
@@ -74,12 +75,19 @@ function Sidebar({ setIsSideBarOpen, isSideBarOpen }) {
                   </div>
                 </div>
                 <div className="mx-2 p-4 relative space-x-2 bg-slate-100 dark:bg-[#20212c] flex justify-center items-center rounded-lg">
-                  <img src={lightIcon} />
+                  <button
+                    onClick={toggleDarkMode} // Toggle between light and dark mode
+                    className={`text-3xl ${
+                      darkSide ? "text-gray-300" : "text-yellow-500"
+                    } focus:outline-none`}
+                  >
+                    <MdLightMode />
+                  </button>
 
                   <Switch
                     checked={darkSide}
                     onChange={toggleDarkMode}
-                    className={`${darkSide ? "bg-[#635fc71]" : "bg=gray-200"}
+                    className={`${darkSide ? "bg-[#33c6d8]" : "bg-[#d8c648]"}
                     relative inline-flex h-6 w-11 items-center rounded-full`}
                   >
                     <span
@@ -90,7 +98,14 @@ function Sidebar({ setIsSideBarOpen, isSideBarOpen }) {
                     />
                   </Switch>
 
-                  <img src={darkIcon} />
+                  <button
+                    onClick={toggleDarkMode} // Toggle between light and dark mode
+                    className={`text-3xl ${
+                      darkSide ? "text-black" : "text-gray-300"
+                    } focus:outline-none`}
+                  >
+                    <MdDarkMode />
+                  </button>
                 </div>
               </div>
             </div>

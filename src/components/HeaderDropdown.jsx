@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import darkIcon from "../assets/icon-dark-theme.svg";
-import lightIcon from "../assets/icon-light-theme.svg";
 import { Switch } from "@headlessui/react";
 import darkMode from "../hooks/darkMode";
 import { BsClipboard2DataFill } from "react-icons/bs";
+import { MdLightMode, MdDarkMode } from "react-icons/md";
 import boardsSlice from "../redux/boardsSlice";
 
 function HeaderDropdown({ setOpenDropdown, setBoardModalOpen }) {
@@ -14,10 +13,12 @@ function HeaderDropdown({ setOpenDropdown, setBoardModalOpen }) {
     colorTheme === "light" ? true : false
   );
 
-  const toggleDarkMode = (checked) => {
-    setColorTheme(colorTheme);
-    setDarkSide(checked);
+  const toggleDarkMode = () => {
+    const newDarkMode = !darkSide;
+    setColorTheme(newDarkMode ? "dark" : "light");
+    setDarkSide(newDarkMode);
   };
+
   const boards = useSelector((state) => state.boards);
   return (
     <div
@@ -63,12 +64,19 @@ function HeaderDropdown({ setOpenDropdown, setBoardModalOpen }) {
             <p className="text-md font-bold">Create New Board</p>
           </div>
           <div className="mx-2 p-4 space-x-2 bg-slate-100 dark:bg-[#20212c] flex justify-center items-center rounded-lg">
-            <img src={lightIcon} />
+            <button
+              onClick={toggleDarkMode} // Toggle between light and dark mode
+              className={`text-3xl ${
+                darkSide ? "text-gray-300" : "text-yellow-500"
+              } focus:outline-none`}
+            >
+              <MdLightMode />
+            </button>
 
             <Switch
               checked={darkSide}
               onChange={toggleDarkMode}
-              className={`${darkSide ? "bg-[#635fc71]" : "bg=gray-200"}
+              className={`${darkSide ? "bg-[#33c6d8]" : "bg-[#d8c648]"}
             relative inline-flex h-6 w-11 items-center rounded-full`}
             >
               <span
@@ -77,7 +85,14 @@ function HeaderDropdown({ setOpenDropdown, setBoardModalOpen }) {
               />
             </Switch>
 
-            <img src={darkIcon} />
+            <button
+              onClick={toggleDarkMode} // Toggle between light and dark mode
+              className={`text-3xl ${
+                darkSide ? "text-black" : "text-gray-300"
+              } focus:outline-none`}
+            >
+              <MdDarkMode />
+            </button>
           </div>
         </div>
       </div>

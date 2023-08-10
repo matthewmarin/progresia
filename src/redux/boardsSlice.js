@@ -151,8 +151,11 @@ const boardsSlice = createSlice({
       const { colIndex, prevColIndex, taskIndex } = action.payload;
       const board = state.find((board) => board.isActive);
       const prevCol = board.columns.find((col, i) => i === prevColIndex);
-      const task = prevCol.tasks.splice(taskIndex, 1)[0];
-      board.columns.find((col, i) => i === colIndex).tasks.push(task);
+
+      if (prevCol && board.columns[colIndex]) {
+        const task = prevCol.tasks.splice(taskIndex, 1)[0];
+        board.columns[colIndex].tasks.push(task);
+      }
     },
   },
 });

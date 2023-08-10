@@ -11,8 +11,8 @@ function AddEditBoard({ setBoardModalOpen, type }) {
   const boards = useSelector((state) => state.boards);
 
   const [newColumns, setNewColumns] = useState([
-    { name: "Todo", task: [], id: uuidv4() },
-    { name: "Doing", task: [], id: uuidv4() },
+    { name: "Todo", tasks: [], id: uuidv4() },
+    { name: "Doing", tasks: [], id: uuidv4() },
   ]);
 
   useEffect(() => {
@@ -135,7 +135,7 @@ function AddEditBoard({ setBoardModalOpen, type }) {
             onClick={() => {
               setNewColumns((prevState) => [
                 ...prevState,
-                { name: "", task: [], id: uuidv4() },
+                { name: "", tasks: [], id: uuidv4() },
               ]);
             }}
           >

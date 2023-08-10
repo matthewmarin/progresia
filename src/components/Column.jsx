@@ -19,8 +19,17 @@ function Column({ colIndex }) {
 
   const dispatch = useDispatch();
   const boards = useSelector((state) => state.boards);
-  const board = boards.find((board) => board.isActive);
+  const board = boards.find((board) => board.isActive === true);
   const col = board.columns.find((col, i) => i === colIndex);
+
+  if (
+    !board ||
+    !board.columns ||
+    colIndex < 0 ||
+    colIndex >= board.columns.length
+  ) {
+    return null; // Handle the case where the board or column is undefined
+  }
 
   const [usedColors, setUsedColors] = useState([]);
   const availableColors = allColors.filter(

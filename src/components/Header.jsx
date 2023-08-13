@@ -43,13 +43,24 @@ function Header({ boardModalOpen, setBoardModalOpen }) {
     setIsEllipsisOpen(false);
     setBoardType("add");
   };
+
+  const handleLogout = () => {
+    // Perform any logout actions you need here
+
+    // Redirect to the login page manually
+    window.location.href = "/login";
+  };
   return (
     <div className="p-4 fixed left-0 bg-white dark:bg-[#2b2c37] z-50 right-0">
       <header className="flex justify-between dark:text-white items-center">
         {/* Left Side */}
 
         <div className="flex items-center space-x-2 md:space-x-4 uppercase">
-          <img src={logo} alt="logo" className="h-[50px] w-[130px]" />
+          <img
+            src={logo}
+            alt="logo"
+            className="h-[50px] md:w-[250px] w-[130px] transition-all duration-300"
+          />
           <div className="flex items-center">
             <h3
               className="truncate max-w-[200px] ml-2 mr-2 md:text-2xl text-lg
@@ -83,6 +94,12 @@ function Header({ boardModalOpen, setBoardModalOpen }) {
             + Add New task
           </button>
           <button
+            onClick={handleLogout}
+            className="hidden md:block button bg-red-700 py-2 px-4 rounded-full  text-black dark:text-white text-lg font-semibold hover:opacity-80 duration-200 "
+          >
+            Logout
+          </button>
+          <button
             onClick={() => {
               setOpenAddEditTask((prevState) => !prevState);
             }}
@@ -90,6 +107,7 @@ function Header({ boardModalOpen, setBoardModalOpen }) {
           >
             +
           </button>
+
           <img
             src={ellipsis}
             onClick={() => {

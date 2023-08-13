@@ -3,21 +3,28 @@ import { useSelector } from "react-redux";
 import TaskModal from "../modal/TaskModal";
 
 function Task({ taskIndex, colIndex }) {
-  const boards = useSelector((state) => state.boards);
-  const board = boards.find((board) => board.isActive);
-  const columns = board.columns;
-  const col = columns.find((col, i) => i === colIndex);
-  const task = col.tasks.find((task, i) => i === taskIndex);
+  const board = useSelector((state) => {
+    const activeBoard = state.boards.find((board) => board.isActive);
+    return activeBoard || {}; // Use an empty object as a fallback
+  });
+
+  const col = board.columns?.[colIndex]; // Use optional chaining to avoid errors
+
+  if (!col) {
+    return null; // Handle the case where the column is undefined
+  }
+
+  const task = col.tasks?.[taskIndex]; // Use optional chaining to avoid errors
+
+  if (!task) {
+    return null; // Handle the case where the task is undefined
+  }
 
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
 
-  let completed = 0;
-  let subtasks = task.subtasks;
-  subtasks.forEach((subtask) => {
-    if (subtask.isCompleted) {
-      completed++;
-    }
-  });
+  const completedSubtasks =
+    task.subtasks?.filter((subtask) => subtask.isCompleted) || [];
+  const totalSubtasks = task.subtasks?.length || 0;
 
   const handleOnDrag = (e) => {
     e.dataTransfer.setData(
@@ -34,12 +41,12 @@ function Task({ taskIndex, colIndex }) {
         onClick={() => {
           setIsTaskModalOpen(true);
         }}
-        className="w-[280px] first:my-5 rounded-lg bg-white dark:bg-[#2b2c37]
+        className="w-[280px]  first:my-5 rounded-lg bg-white dark:bg-[#2b2c37]
       shadow-[#364e7e1a] py-6 px-3 shadow-lg hover:text-[#d8c648] dark:text-white dark:hover:text-[#33c6d8] cursor-pointer"
       >
-        <p className="font-bold tracking-wide">{task.title}</p>
-        <p className="font-bold text-xs tracking-tighter mt-2 text-gray-500">
-          {completed} of {subtasks.length} completed tasks
+        <p className="font-bold text-xl tracking-wide">{task.title}</p>
+        <p className="font-bold text-md tracking-tighter mt-8 text-gray-500">
+          {completedSubtasks.length} of {totalSubtasks} completed tasks
         </p>
       </div>
       {isTaskModalOpen && (

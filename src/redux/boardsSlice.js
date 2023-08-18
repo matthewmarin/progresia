@@ -1,7 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
 
-const initialState = [];
+const initialState = {
+  boards: [],
+  activeBoard: -1,
+};
 
 const boardsSlice = createSlice({
   name: "boards",
@@ -21,6 +23,12 @@ const boardsSlice = createSlice({
 
       return newState;
     },
+
+    updateColumnsAndTasks: (state, action) => {
+      const { index, columnsAndTasksData } = action.payload;
+      state[index].columns = columnsAndTasksData;
+    },
+
     editBoard: (state, action) => {
       const newState = [...state];
       const payload = action.payload;
@@ -94,11 +102,26 @@ const boardsSlice = createSlice({
 
     setSubtaskCompleted: (state, action) => {
       const { colIndex, taskIndex, subtaskIndex } = action.payload;
-      const board = state.find((board) => board.isActive);
-      const column = board.columns[colIndex];
-      const task = column.tasks[taskIndex];
-      const subtask = task.subtasks[subtaskIndex];
-      subtask.isCompleted = !subtask.isCompleted;
+
+      // Find the active board
+      const activeBoard = state.find((board) => board.isActive);
+
+      if (activeBoard) {
+        const column = activeBoard.columns[colIndex];
+
+        if (column) {
+          const task = column.tasks[taskIndex];
+
+          if (task && task.subtasks) {
+            const subtask = task.subtasks[subtaskIndex];
+
+            if (subtask) {
+              // Toggle the completion status
+              subtask.isCompleted = !subtask.isCompleted;
+            }
+          }
+        }
+      }
     },
     setTaskStatus: (state, action) => {
       const { colIndex, taskIndex, newColIndex, status } = action.payload;

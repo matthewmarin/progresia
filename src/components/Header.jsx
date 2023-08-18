@@ -66,7 +66,7 @@ function Header({ boardModalOpen, setBoardModalOpen }) {
               className="truncate max-w-[200px] ml-2 mr-2 md:text-2xl text-lg
             font-bold md:ml-20 font-sans"
             >
-              {board.name}
+              {board?.name}
             </h3>
             {openDropdown ? (
               <BiSolidUpArrow

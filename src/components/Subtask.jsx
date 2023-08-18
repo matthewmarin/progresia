@@ -1,6 +1,8 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import boardsSlice from "../redux/boardsSlice";
+import { setSubtaskCompleted } from "../redux/boardsSlice";
+import axios from "axios";
 
 function Subtask({ index, taskIndex, colIndex }) {
   const dispatch = useDispatch();
@@ -9,13 +11,26 @@ function Subtask({ index, taskIndex, colIndex }) {
   const columns = board.columns;
   const col = columns.find((column, i) => colIndex === i);
   const task = col.tasks.find((col, i) => taskIndex === i);
-  const subtask = task.subtasks.find((subtask, i) => i === index);
+  const subtask = task.subtasks && task.subtasks[index];
+
+  if (!subtask) {
+    return null;
+  }
+
   const checked = subtask.isCompleted;
 
-  const onDivClick = () => {
-    dispatch(
-      boardsSlice.actions.setSubtaskCompleted({ index, taskIndex, colIndex })
-    );
+  const onDivClick = async () => {
+    try {
+      await axios.patch(`http://localhost:8000/api/v1/subtasks/${subtask.id}`, {
+        isCompleted: !checked,
+      });
+
+      dispatch(
+        setSubtaskCompleted({ colIndex, taskIndex, subtaskIndex: index })
+      );
+    } catch (error) {
+      console.error("Error updating subtask:", error);
+    }
   };
 
   return (

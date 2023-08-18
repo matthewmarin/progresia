@@ -15,7 +15,7 @@ function Center({ boardModalOpen, setBoardModalOpen }) {
 
   const boards = useSelector((state) => state.boards);
   const activeBoard = boards.find((board) => board.isActive);
-  const columns = activeBoard ? activeBoard.columns : [];
+  const columns = activeBoard?.columns || [];
 
   useEffect(() => {
     const handleWindowResize = () => {
@@ -46,7 +46,7 @@ function Center({ boardModalOpen, setBoardModalOpen }) {
       )}
 
       {/* Columns */}
-      {columns.length > 0 ? (
+      {activeBoard && columns.length > 0 ? (
         <>
           {columns.map((col, index) => (
             <Column key={index} colIndex={index} />

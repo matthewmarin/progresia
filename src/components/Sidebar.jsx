@@ -7,7 +7,7 @@ import { Switch } from "@headlessui/react";
 import { BiSolidHide, BiSolidShow } from "react-icons/bi";
 import AddEditBoard from "../modal/AddEditBoard";
 import { MdLightMode, MdDarkMode } from "react-icons/md";
-import { fetchBoards } from "../utils/api";
+import { fetchBoards, fetchColumnsAndTasks } from "../utils/api";
 
 function Sidebar({ setIsSideBarOpen, isSideBarOpen }) {
   const dispatch = useDispatch();
@@ -17,7 +17,6 @@ function Sidebar({ setIsSideBarOpen, isSideBarOpen }) {
     colorTheme === "light" ? true : false
   );
 
-  // Fetch boards when the app starts (assuming this action fetches boards from the server)
   useEffect(() => {
     fetchBoards(dispatch);
   }, []);
@@ -59,8 +58,29 @@ function Sidebar({ setIsSideBarOpen, isSideBarOpen }) {
                     "bg-[#d8c648] dark:bg-[#33c6d8] rounded-r-full text-black dark:text-white mr-8"
                   }`}
                       key={index}
-                      onClick={() => {
+                      onClick={async () => {
                         dispatch(boardsSlice.actions.setBoardActive({ index }));
+
+                        // Fetch columns and tasks for the selected board
+                        const selectedBoard = boards[index];
+                        try {
+                          const columnsAndTasksData =
+                            await fetchColumnsAndTasks(selectedBoard.id);
+                          if (columnsAndTasksData) {
+                            // Dispatch an action to update columns and tasks in Redux store
+                            dispatch(
+                              boardsSlice.actions.updateColumnsAndTasks({
+                                index,
+                                columnsAndTasksData,
+                              })
+                            );
+                          }
+                        } catch (error) {
+                          console.error(
+                            "Error fetching columns and tasks:",
+                            error
+                          );
+                        }
                       }}
                     >
                       <BsClipboard2DataFill className="h-4" />

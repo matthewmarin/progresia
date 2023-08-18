@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ellipsis from "../assets/icon-vertical-ellipsis.svg";
 import EllipsisMenu from "../components/EllipsisMenu";
@@ -6,6 +6,7 @@ import Subtask from "../components/Subtask";
 import boardsSlice from "../redux/boardsSlice";
 import DeleteModal from "./DeleteModal";
 import AddEditTask from "./AddEditTask";
+import { fetchSubtasksForTask } from "../utils/api";
 
 function TaskModal({ colIndex, taskIndex, setIsTaskModalOpen }) {
   const dispatch = useDispatch();
@@ -14,14 +15,34 @@ function TaskModal({ colIndex, taskIndex, setIsTaskModalOpen }) {
   const columns = board.columns;
   const col = columns.find((column, i) => colIndex === i);
   const task = col.tasks.find((col, i) => taskIndex === i);
-  const subtasks = task.subtasks;
 
-  let completed = 0;
-  subtasks.forEach((subtask) => {
-    if (subtask.isCompleted) {
-      completed++;
+  const [subtasks, setSubtasks] = useState([]);
+  const [completed, setCompleted] = useState(0);
+
+  useEffect(() => {
+    async function fetchSubtasks() {
+      try {
+        const subtasksData = await fetchSubtasksForTask(task.id);
+
+        setSubtasks(subtasksData);
+        const completedCount = subtasksData.filter(
+          (subtask) => subtask.isCompleted
+        ).length;
+        setCompleted(completedCount);
+      } catch (error) {
+        console.error("Error fetching subtasks:", error);
+      }
     }
-  });
+
+    fetchSubtasks();
+  }, [task.id]);
+
+  const completedCount = useMemo(() => {
+    return subtasks.reduce(
+      (count, subtask) => count + (subtask.isCompleted ? 1 : 0),
+      0
+    );
+  }, [subtasks]);
 
   const [status, setStatus] = useState(task.status);
   const [newColIndex, setNewColIndex] = useState(columns.indexOf(col));
@@ -65,6 +86,17 @@ function TaskModal({ colIndex, taskIndex, setIsTaskModalOpen }) {
     setIsDeleteModalOpen(false);
   };
 
+  {
+    subtasks.map((subtask, i) => (
+      <React.memo
+        key={i}
+        children={
+          <Subtask index={i} taskIndex={taskIndex} colIndex={colIndex} />
+        }
+      />
+    ));
+  }
+
   return (
     <div
       onClick={onClose}
@@ -100,7 +132,7 @@ function TaskModal({ colIndex, taskIndex, setIsTaskModalOpen }) {
         </p>
 
         <p className="pt-6 text-gray-500 tracking-widest text-sm">
-          Subtasks ({completed} of {subtasks.length})
+          Subtasks ({completedCount} of {subtasks.length})
         </p>
 
         {/* Subtasks Section */}
@@ -126,7 +158,7 @@ function TaskModal({ colIndex, taskIndex, setIsTaskModalOpen }) {
           </label>
           <select
             className="select-status flex flex-grow px-4 py-2 rounded-md text-sm bg-transparent focus:border-0
-          border border-gray-300 outline-none focus:outline-[#d8c648] dark:focus:outline-[#33c6d8] text-black dark:text-gray-100"
+          border border-gray-300 outline-none focus:outline-[#d8c648] dark:focus:outline-[#33c6d8] text-black dark:text-gray-500"
             value={status}
             onChange={onChange}
           >

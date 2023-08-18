@@ -1,20 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "./components/Header";
 import Center from "./components/Center";
 import { useDispatch, useSelector } from "react-redux";
-import boardsSlice from "./redux/boardsSlice";
+import { setBoardActive, setBoards } from "./redux/boardsSlice"; // Import the action creators correctly
 import EmptyBoard from "./components/EmptyBoard";
-import LoginForm from "./components/LoginForm"; // Import your login form component
+import LoginForm from "./components/LoginForm";
+import axios from "axios";
+import { fetchBoards } from "./utils/api";
 
 function App() {
   const dispatch = useDispatch();
 
   const boards = useSelector((state) => state.boards);
-  const activeBoard = boards.find((board) => board.isActive);
 
-  if (!activeBoard && boards.length > 0) {
-    dispatch(boardsSlice.actions.setBoardActive({ index: 0 }));
-  }
+  // Fetch boards when the app starts (assuming this action fetches boards from the server)
+  useEffect(() => {
+    fetchBoards(dispatch);
+  }, []);
+
+  useEffect(() => {
+    const activeBoard = boards.find((board) => board.isActive);
+
+    if (!activeBoard && boards.length > 0) {
+      dispatch(setBoardActive({ index: 0 }));
+    }
+  }, [boards]);
 
   const [boardModalOpen, setBoardModalOpen] = useState(false);
 

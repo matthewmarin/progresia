@@ -1,27 +1,32 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import darkMode from "../hooks/darkMode";
-import boardsSlice from "../redux/boardsSlice";
+import boardsSlice, { setBoards } from "../redux/boardsSlice";
 import { BsClipboard2DataFill } from "react-icons/bs";
 import { Switch } from "@headlessui/react";
 import { BiSolidHide, BiSolidShow } from "react-icons/bi";
 import AddEditBoard from "../modal/AddEditBoard";
 import { MdLightMode, MdDarkMode } from "react-icons/md";
+import { fetchBoards } from "../utils/api";
 
 function Sidebar({ setIsSideBarOpen, isSideBarOpen }) {
   const dispatch = useDispatch();
+  const boards = useSelector((state) => state.boards);
   const [colorTheme, setColorTheme] = darkMode();
   const [darkSide, setDarkSide] = useState(
     colorTheme === "light" ? true : false
   );
+
+  // Fetch boards when the app starts (assuming this action fetches boards from the server)
+  useEffect(() => {
+    fetchBoards(dispatch);
+  }, []);
 
   const toggleDarkMode = () => {
     const newDarkMode = !darkSide;
     setColorTheme(newDarkMode ? "dark" : "light");
     setDarkSide(newDarkMode);
   };
-
-  const boards = useSelector((state) => state.boards);
 
   const [isBoardModalOpen, setIsBoardModalOpen] = useState(false);
   return (

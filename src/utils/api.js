@@ -43,9 +43,12 @@ export const updateSubtaskCompletion = async (
   isCompleted
 ) => {
   try {
-    await axios.patch(`http://localhost:8000/api/v1/subtasks/${subtaskId}`, {
-      isCompleted: isCompleted,
-    });
+    await axios.patch(
+      `http://localhost:8000/api/v1/tasks/${taskId}/subtasks/${subtaskId}`,
+      {
+        isCompleted: isCompleted,
+      }
+    );
   } catch (error) {
     console.error("Error updating subtask completion:", error);
     throw error;

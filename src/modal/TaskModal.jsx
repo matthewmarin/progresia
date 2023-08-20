@@ -14,13 +14,14 @@ function TaskModal({ colIndex, taskIndex, setIsTaskModalOpen }) {
   const board = boards.find((board) => board.isActive);
   const columns = board.columns;
   const col = columns.find((column, i) => colIndex === i);
-  const task = col.tasks.find((col, i) => taskIndex === i);
+  const task = col.tasks.find((_, i) => taskIndex === i);
 
   const [subtasks, setSubtasks] = useState([]);
   const [completed, setCompleted] = useState(0);
 
   useEffect(() => {
     async function fetchSubtasks() {
+      console.log("Task:", task);
       try {
         const subtasksData = await fetchSubtasksForTask(task.id);
 
@@ -88,11 +89,11 @@ function TaskModal({ colIndex, taskIndex, setIsTaskModalOpen }) {
 
   {
     subtasks.map((subtask, i) => (
-      <React.memo
-        key={i}
-        children={
-          <Subtask index={i} taskIndex={taskIndex} colIndex={colIndex} />
-        }
+      <Subtask
+        key={subtask.id}
+        index={i}
+        taskIndex={taskIndex}
+        colIndex={colIndex}
       />
     ));
   }
@@ -138,16 +139,14 @@ function TaskModal({ colIndex, taskIndex, setIsTaskModalOpen }) {
         {/* Subtasks Section */}
 
         <div className="mt-3 space-y-2">
-          {subtasks.map((subtask, i) => {
-            return (
-              <Subtask
-                index={i}
-                taskIndex={taskIndex}
-                colIndex={colIndex}
-                key={i}
-              />
-            );
-          })}
+          {subtasks.map((subtask, i) => (
+            <Subtask
+              key={i}
+              index={i}
+              taskIndex={taskIndex}
+              colIndex={colIndex}
+            />
+          ))}
         </div>
 
         {/* Current Status Section */}
@@ -182,6 +181,7 @@ function TaskModal({ colIndex, taskIndex, setIsTaskModalOpen }) {
           type="edit"
           taskIndex={taskIndex}
           pervColIndex={colIndex}
+          taskId={task.id}
           setIsTaskModalOpen={setIsTaskModalOpen}
         />
       )}

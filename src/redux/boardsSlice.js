@@ -21,6 +21,7 @@ const boardsSlice = createSlice({
       board.columns = payload.newColumns;
       newState.push(board);
 
+      console.log("addBoard", newState);
       return newState;
     },
 
@@ -39,6 +40,7 @@ const boardsSlice = createSlice({
         isActive: newState[boardIndex].isActive,
       };
 
+      console.log("editBoard", newState);
       return newState;
     },
     deleteBoard: (state) => {
@@ -54,6 +56,8 @@ const boardsSlice = createSlice({
           : (board.isActive = false);
         return board;
       });
+
+      console.log("setBoardActive", state);
     },
     addTask: (state, action) => {
       const { title, status, description, subtasks, newColIndex } =
@@ -67,6 +71,7 @@ const boardsSlice = createSlice({
     },
     editTask: (state, action) => {
       const {
+        id,
         title,
         status,
         description,
@@ -77,6 +82,7 @@ const boardsSlice = createSlice({
       } = action.payload;
 
       const updatedTask = {
+        id,
         title,
         status,
         description,
@@ -94,6 +100,8 @@ const boardsSlice = createSlice({
           });
         }
       });
+
+      console.log("editTask", state);
     },
 
     setBoards: (state, action) => {

@@ -21,9 +21,14 @@ function Subtask({ index, taskIndex, colIndex }) {
 
   const onDivClick = async () => {
     try {
-      await axios.patch(`http://localhost:8000/api/v1/subtasks/${subtask.id}`, {
+      const updatedSubtaskData = {
         isCompleted: !checked,
-      });
+      };
+
+      await axios.patch(
+        `http://localhost:8000/api/v1/subtasks/${subtask.id}`,
+        updatedSubtaskData
+      );
 
       dispatch(
         setSubtaskCompleted({ colIndex, taskIndex, subtaskIndex: index })

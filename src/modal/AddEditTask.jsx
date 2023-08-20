@@ -3,12 +3,15 @@ import { v4 as uuidv4 } from "uuid";
 import { RxCross1 } from "react-icons/rx";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import boardsSlice from "../redux/boardsSlice";
+import boardsSlice, { editTask, addTask } from "../redux/boardsSlice";
+import { fetchBoards } from "../utils/api";
+import axios from "axios";
 
 function AddEditTask({
   type,
   device,
   setOpenAddEditTask,
+  taskId,
   setIsTaskModalOpen,
   taskIndex,
   prevColIndex = 0,
@@ -47,18 +50,19 @@ function AddEditTask({
         );
       }
     }
-  }, [col, taskIndex, type, columns, prevColIndex]);
+  }, [col, taskIndex, type, columns, prevColIndex, taskId]);
 
   const onChange = (id, newValue) => {
     setSubtasks((pervState) => {
       const newState = [...pervState];
       const subtasks = newState.find((subtasks) => subtasks.id === id);
+      console.log(subtasks);
       subtasks.title = newValue;
       return newState;
     });
   };
 
-  const onchangeStatus = (e) => {
+  const onChangeStatus = (e) => {
     setStatus(e.target.value);
     setNewColIndex(e.target.selectedIndex);
   };
@@ -81,29 +85,55 @@ function AddEditTask({
     return true;
   };
 
-  const onSubmit = (type) => {
-    if (type === "add") {
-      dispatch(
-        boardsSlice.actions.addTask({
-          title,
-          description,
-          subtasks,
-          status,
-          newColIndex,
-        })
-      );
-    } else {
-      dispatch(
-        boardsSlice.actions.editTask({
-          title,
-          description,
-          subtasks,
-          status,
-          taskIndex,
-          prevColIndex,
-          newColIndex,
-        })
-      );
+  const onSubmit = async () => {
+    const isValid = validate();
+    if (isValid) {
+      const taskData = {
+        title,
+        description,
+        subtasks,
+        status,
+        newColIndex,
+      };
+
+      if (type === "edit") {
+        dispatch(
+          editTask({
+            id: task.id,
+            title,
+            description,
+            subtasks,
+            status,
+            prevColIndex,
+            newColIndex,
+            taskIndex,
+          })
+        );
+      } else {
+        dispatch(addTask(taskData));
+      }
+
+      try {
+        if (type === "edit") {
+          await axios.patch(
+            `http://localhost:8000/api/v1/tasks/${task.id}`,
+            taskData
+          );
+        } else {
+          await axios.post("http://localhost:8000/api/v1/tasks", taskData);
+        }
+        setTitle("");
+        setDescription("");
+        setSubtasks([
+          { title: "", isCompleted: false, id: "" },
+          { title: "", isCompleted: false, id: "" },
+        ]);
+        setStatus("");
+        setNewColIndex(0);
+        setOpenAddEditTask(false);
+      } catch (error) {
+        console.error("Error creating/editing task:", error);
+      }
     }
   };
 
@@ -161,8 +191,8 @@ function AddEditTask({
           <label className="text-sm dark:text-white text-gray-500">
             Subtasks
           </label>
-          {subtasks.map((subtasks, index) => (
-            <div key={index} className="flex items-center w-full">
+          {subtasks.map((subtask, index) => (
+            <div key={subtask.id} className="flex items-center w-full">
               <input
                 onChange={(e) => {
                   onChange(subtasks.id, e.target.value);
@@ -205,13 +235,13 @@ function AddEditTask({
           </label>
           <select
             value={status}
-            onChange={(e) => onchangeStatus(e)}
+            onChange={(e) => onChangeStatus(e)}
             className="select-status flex flex-grow px-4 py-2 rounded-md text-sm bg-transparent focus:border-0
           border border-gray-300 outline-none focus:outline-[#d8c648] dark:focus:outline-[#33c6d8] text-black dark:text-gray-100 "
           >
-            {columns.map((columns, index) => (
-              <option className="text-black " value={columns.name} key={index}>
-                {columns.name}
+            {columns.map((column, index) => (
+              <option className="text-black " value={column.name} key={index}>
+                {column.name}
               </option>
             ))}
           </select>

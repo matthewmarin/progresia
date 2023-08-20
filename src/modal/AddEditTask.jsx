@@ -31,8 +31,7 @@ function AddEditTask({
   const task = col ? col.tasks.find((task, index) => index === taskIndex) : [];
 
   const [subtasks, setSubtasks] = useState([
-    { title: "", isCompleted: false, id: uuidv4() },
-    { title: "", isCompleted: false, id: uuidv4() },
+    { title: "", isCompleted: false, id: "" },
   ]);
 
   useEffect(() => {
@@ -42,24 +41,32 @@ function AddEditTask({
         setTitle(task.title);
         setDescription(task.description);
         setStatus(columns[prevColIndex]?.name || "");
-        setSubtasks(
-          task.subtasks.map((subtask) => ({
-            ...subtask,
-            id: uuidv4(),
-          }))
-        );
+        setSubtasks([...task.subtasks]);
       }
     }
   }, [col, taskIndex, type, columns, prevColIndex, taskId]);
 
-  const onChange = (id, newValue) => {
-    setSubtasks((pervState) => {
-      const newState = [...pervState];
-      const subtasks = newState.find((subtasks) => subtasks.id === id);
-      console.log(subtasks);
-      subtasks.title = newValue;
+  const onChange = async (id, newValue) => {
+    setSubtasks((prevState) => {
+      const newState = prevState.map((subtask) => {
+        if (subtask.id === id) {
+          return { ...subtask, title: newValue };
+        }
+        return subtask;
+      });
       return newState;
     });
+
+    try {
+      const updatedSubtask = subtasks.find((subtask) => subtask.id === id);
+      if (updatedSubtask) {
+        await axios.patch(`http://localhost:8000/api/v1/subtasks/${id}`, {
+          title: newValue,
+        });
+      }
+    } catch (error) {
+      console.error("Error updating subtask:", error);
+    }
   };
 
   const onChangeStatus = (e) => {
@@ -124,10 +131,7 @@ function AddEditTask({
         }
         setTitle("");
         setDescription("");
-        setSubtasks([
-          { title: "", isCompleted: false, id: "" },
-          { title: "", isCompleted: false, id: "" },
-        ]);
+        setSubtasks([{ title: "", isCompleted: false, id: "" }]);
         setStatus("");
         setNewColIndex(0);
         setOpenAddEditTask(false);
@@ -195,10 +199,10 @@ function AddEditTask({
             <div key={subtask.id} className="flex items-center w-full">
               <input
                 onChange={(e) => {
-                  onChange(subtasks.id, e.target.value);
+                  onChange(subtask.id, e.target.value);
                 }}
                 type="text"
-                value={subtasks.title}
+                value={subtask.title}
                 className="bg-transparent outline-none focus:border-0
                         flex-grow px-4 py-2 rounded-md text-sm border border-gray-600
                         focus:outline-[#d8c648] dark:focus:outline-[#33c6d8] ring-0"
@@ -219,7 +223,7 @@ function AddEditTask({
             onClick={() => {
               setSubtasks((prevState) => [
                 ...prevState,
-                { title: "", isCompleted: false, id: uuidv4() },
+                { title: "", isCompleted: false, id: "" },
               ]);
             }}
           >

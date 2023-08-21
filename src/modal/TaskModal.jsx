@@ -4,9 +4,9 @@ import ellipsis from "../assets/icon-vertical-ellipsis.svg";
 import EllipsisMenu from "../components/EllipsisMenu";
 import Subtask from "../components/Subtask";
 import boardsSlice from "../redux/boardsSlice";
-import DeleteModal from "./DeleteModal";
 import AddEditTask from "./AddEditTask";
 import { fetchSubtasksForTask, updateSubtaskCompletion } from "../utils/api";
+import axios from "axios";
 
 function TaskModal({ colIndex, taskIndex, setIsTaskModalOpen }) {
   const [newTaskName, setNewTaskName] = useState("");
@@ -20,16 +20,25 @@ function TaskModal({ colIndex, taskIndex, setIsTaskModalOpen }) {
   const [subtasks, setSubtasks] = useState([]);
   const [completed, setCompleted] = useState(0);
 
+  const onDeleteTask = async () => {
+    try {
+      await axios.delete(`http://localhost:8000/api/v1/tasks/${task.id}`);
+
+      dispatch(boardsSlice.actions.deleteTask({ taskIndex, colIndex }));
+
+      setIsTaskModalOpen(false);
+    } catch (error) {
+      console.error("Error deleting task:", error);
+    }
+  };
+
   const handleSubtaskCompletionChange = async (subtaskId, isCompleted) => {
     try {
-      // Update the subtask completion status
       await updateSubtaskCompletion(task.id, subtaskId, isCompleted);
 
-      // Fetch updated subtasks data and set state
       const updatedSubtasks = await fetchSubtasksForTask(task.id);
       setSubtasks(updatedSubtasks);
 
-      // Calculate the completed subtasks count
       const completedCount = updatedSubtasks.filter(
         (subtask) => subtask.isCompleted
       ).length;
@@ -68,16 +77,10 @@ function TaskModal({ colIndex, taskIndex, setIsTaskModalOpen }) {
   const [status, setStatus] = useState(task.status);
   const [newColIndex, setNewColIndex] = useState(columns.indexOf(col));
   const [ellipsisMenuOpen, setEllipsisMenuOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false);
 
   const setOpenEditModal = () => {
     setIsAddTaskModalOpen(true);
-    setEllipsisMenuOpen(false);
-  };
-
-  const setOpenDeleteModal = () => {
-    setIsDeleteModalOpen(true);
     setEllipsisMenuOpen(false);
   };
 
@@ -99,12 +102,6 @@ function TaskModal({ colIndex, taskIndex, setIsTaskModalOpen }) {
   const onChange = (e) => {
     setStatus(e.target.value);
     setNewColIndex(e.target.selectedIndex);
-  };
-
-  const onDeleteBtnClick = () => {
-    dispatch(boardsSlice.actions.deleteTask({ taskIndex, colIndex }));
-    setIsTaskModalOpen(false);
-    setIsDeleteModalOpen(false);
   };
 
   {
@@ -147,11 +144,7 @@ function TaskModal({ colIndex, taskIndex, setIsTaskModalOpen }) {
             className="cursor-pointer h-6"
           />
           {ellipsisMenuOpen && (
-            <EllipsisMenu
-              setOpenEditModal={setOpenEditModal}
-              setOpenDeleteModal={setOpenDeleteModal}
-              type="Task"
-            />
+            <EllipsisMenu setOpenEditModal={setOpenEditModal} type="Task" />
           )}
         </div>
 
@@ -192,16 +185,14 @@ function TaskModal({ colIndex, taskIndex, setIsTaskModalOpen }) {
               <option key={index}>{column.name}</option>
             ))}
           </select>
+          <button
+            className="w-full items-center hover:opacity-75 dark:text-white text-black bg-red-500 dark:bg-red-700 mt-2 py-2 rounded-full"
+            onClick={() => onDeleteTask()}
+          >
+            Delete Task
+          </button>
         </div>
       </div>
-      {isDeleteModalOpen && (
-        <DeleteModal
-          setIsDeleteModalOpen={setIsDeleteModalOpen}
-          onDeleteBtnClick={onDeleteBtnClick}
-          title={task.title}
-          type="task"
-        />
-      )}
       {isAddTaskModalOpen && (
         <AddEditTask
           setOpenAddEditTask={setIsAddTaskModalOpen}

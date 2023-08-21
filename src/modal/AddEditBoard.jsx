@@ -8,12 +8,12 @@ import axios from "axios";
 function AddEditBoard({ setBoardModalOpen, type }) {
   const dispatch = useDispatch();
   const [name, setName] = useState("");
-  const [isValid, setIsValid] = useState("true");
+  const [isValid, setIsValid] = useState(true);
   const boards = useSelector((state) => state.boards);
 
   const [newColumns, setNewColumns] = useState([
-    { name: "Todo", tasks: [], id: uuidv4() },
-    { name: "Doing", tasks: [], id: uuidv4() },
+    { name: "Todo", tasks: [], id: "" },
+    { name: "Doing", tasks: [], id: "" },
   ]);
 
   useEffect(() => {
@@ -60,7 +60,21 @@ function AddEditBoard({ setBoardModalOpen, type }) {
     setBoardModalOpen(false);
 
     if (type === "add") {
-      dispatch(boardsSlice.actions.addBoard({ name, newColumns }));
+      const newBoard = {
+        name,
+        columns: newColumns,
+      };
+      console.log(newBoard);
+      try {
+        const response = await axios.post(
+          "http://localhost:8000/api/v1/boards",
+          newBoard
+        );
+
+        dispatch(boardsSlice.actions.addBoard(response.data));
+      } catch (error) {
+        console.error("Error creating board:", error);
+      }
     } else {
       try {
         const activeBoard = boards.find((board) => board.isActive);
@@ -71,7 +85,7 @@ function AddEditBoard({ setBoardModalOpen, type }) {
           name: name,
         };
 
-        await axios.put(
+        await axios.patch(
           `http://localhost:8000/api/v1/boards/${activeBoard.id}`,
           updatedBoard
         );

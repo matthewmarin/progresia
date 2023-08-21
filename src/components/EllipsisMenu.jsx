@@ -1,6 +1,6 @@
 import React from "react";
 
-function EllipsisMenu({ type, setOpenEditModal, setOpenDeleteModal }) {
+function EllipsisMenu({ type, setOpenEditModal }) {
   return (
     <div
       className={
@@ -18,13 +18,6 @@ function EllipsisMenu({ type, setOpenEditModal, setOpenDeleteModal }) {
             className=" cursor-pointer dark:text-gray-400 text-gray-700"
           >
             Edit {type}
-          </p>
-
-          <p
-            onClick={() => setOpenDeleteModal()}
-            className=" cursor-pointer text-red-500"
-          >
-            Delete {type}
           </p>
         </div>
       </div>

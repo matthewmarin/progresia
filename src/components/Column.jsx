@@ -28,7 +28,7 @@ function Column({ colIndex }) {
     colIndex < 0 ||
     colIndex >= board.columns.length
   ) {
-    return null; // Handle the case where the board or column is undefined
+    return null;
   }
 
   const [usedColors, setUsedColors] = useState([]);

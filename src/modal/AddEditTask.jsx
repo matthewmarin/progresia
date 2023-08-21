@@ -115,9 +115,11 @@ function AddEditTask({
           newColIndex,
           taskIndex,
         };
-        dispatch(editTask(editedTask)); // Dispatch the editTask action
+        dispatch(editTask(editedTask));
+        console.log(editedTask);
       } else {
         dispatch(addTask(taskData));
+        console.log(taskData);
       }
 
       try {

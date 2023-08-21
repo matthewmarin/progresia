@@ -81,23 +81,21 @@ const boardsSlice = createSlice({
         taskIndex,
       } = action.payload;
 
-      const updatedTask = {
-        id,
-        title,
-        status,
-        description,
-        subtasks,
-      };
-
       state.forEach((board) => {
         if (board.isActive) {
-          board.columns.forEach((col, index) => {
-            if (index === prevColIndex) {
-              col.tasks[taskIndex] = updatedTask;
-            } else if (index === newColIndex) {
-              col.tasks.push(updatedTask);
-            }
-          });
+          const col = board.columns[prevColIndex];
+          const task = col.tasks[taskIndex];
+
+          task.title = title;
+          task.status = status;
+          task.description = description;
+          task.subtasks = subtasks;
+
+          if (prevColIndex !== newColIndex) {
+            col.tasks.splice(taskIndex, 1);
+            const newCol = board.columns[newColIndex];
+            newCol.tasks.push(task);
+          }
         }
       });
 
@@ -150,6 +148,7 @@ const boardsSlice = createSlice({
       const { colIndex, taskIndex } = action.payload;
       const board = state.find((board) => board.isActive);
       const column = board.columns[colIndex];
+      column.tasks[taskIndex].subtasks = [];
       column.tasks.splice(taskIndex, 1);
     },
     dragTask: (state, action) => {

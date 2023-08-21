@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
 import { RxCross1 } from "react-icons/rx";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import boardsSlice, { editTask, addTask } from "../redux/boardsSlice";
-import { fetchBoards } from "../utils/api";
+import { useSelector, useDispatch } from "react-redux";
+import { editTask, addTask } from "../redux/boardsSlice";
 import axios from "axios";
 
 function AddEditTask({
@@ -12,53 +9,51 @@ function AddEditTask({
   device,
   setOpenAddEditTask,
   taskId,
-  setIsTaskModalOpen,
   taskIndex,
   prevColIndex = 0,
 }) {
   const dispatch = useDispatch();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [isValid, setIsValid] = useState("true");
   const boards = useSelector((state) => state.boards);
   const board = boards.find((board) => board.isActive);
 
   const columns = board.columns;
   const col = columns.find((col, index) => index === prevColIndex);
-  const [status, setStatus] = useState(columns[prevColIndex].name);
+  const [status, setStatus] = useState(columns[prevColIndex]?.name || "");
   const [newColIndex, setNewColIndex] = useState(prevColIndex);
 
-  const task = col ? col.tasks.find((task, index) => index === taskIndex) : [];
+  const task = col
+    ? col.tasks.find((task, index) => index === taskIndex)
+    : null;
 
   const [subtasks, setSubtasks] = useState([
     { title: "", isCompleted: false, id: "" },
   ]);
 
   useEffect(() => {
-    if (type === "edit" && col) {
-      const task = col.tasks.find((task, index) => index === taskIndex);
-      if (task) {
-        setTitle(task.title);
-        setDescription(task.description);
-        setStatus(columns[prevColIndex]?.name || "");
-        setSubtasks([...task.subtasks]);
-      }
+    if (type === "edit" && col && task) {
+      setTitle(task.title);
+      setDescription(task.description);
+      setStatus(columns[prevColIndex]?.name || "");
+      setSubtasks([...task.subtasks]);
     }
   }, [col, taskIndex, type, columns, prevColIndex, taskId]);
 
   const onChange = async (id, newValue) => {
-    setSubtasks((prevState) => {
-      const newState = prevState.map((subtask) => {
-        if (subtask.id === id) {
-          return { ...subtask, title: newValue };
-        }
-        return subtask;
-      });
-      return newState;
+    const updatedSubtasks = subtasks.map((subtask) => {
+      if (subtask.id === id) {
+        return { ...subtask, title: newValue };
+      }
+      return subtask;
     });
 
+    setSubtasks(updatedSubtasks);
+
     try {
-      const updatedSubtask = subtasks.find((subtask) => subtask.id === id);
+      const updatedSubtask = updatedSubtasks.find(
+        (subtask) => subtask.id === id
+      );
       if (updatedSubtask) {
         await axios.patch(`http://localhost:8000/api/v1/subtasks/${id}`, {
           title: newValue,
@@ -74,12 +69,19 @@ function AddEditTask({
     setNewColIndex(e.target.selectedIndex);
   };
 
-  const onDelete = (id) => {
-    setSubtasks((perState) => perState.filter((el) => el.id !== id));
+  const onDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:8000/api/v1/subtasks/${id}`);
+
+      setSubtasks((prevState) =>
+        prevState.filter((subtask) => subtask.id !== id)
+      );
+    } catch (error) {
+      console.error("Error deleting subtask:", error);
+    }
   };
 
   const validate = () => {
-    setIsValid(false);
     if (!title.trim()) {
       return false;
     }
@@ -88,7 +90,6 @@ function AddEditTask({
         return false;
       }
     }
-    setIsValid(true);
     return true;
   };
 
@@ -103,27 +104,26 @@ function AddEditTask({
         newColIndex,
       };
 
-      if (type === "edit") {
-        dispatch(
-          editTask({
-            id: task.id,
-            title,
-            description,
-            subtasks,
-            status,
-            prevColIndex,
-            newColIndex,
-            taskIndex,
-          })
-        );
+      if (type === "edit" && task) {
+        const editedTask = {
+          id: task.id,
+          title,
+          description,
+          subtasks,
+          status,
+          prevColIndex,
+          newColIndex,
+          taskIndex,
+        };
+        dispatch(editTask(editedTask)); // Dispatch the editTask action
       } else {
         dispatch(addTask(taskData));
       }
 
       try {
-        if (type === "edit") {
+        if (type === "edit" && task) {
           await axios.patch(
-            `http://localhost:8000/api/v1/tasks/${task.id}`,
+            `http://localhost:8000/api/v1/tasks/${taskId}`,
             taskData
           );
         } else {
@@ -211,7 +211,7 @@ function AddEditTask({
               <RxCross1
                 className="cursor-pointer m-4"
                 onClick={() => {
-                  onDelete(subtasks.id);
+                  onDelete(subtask.id);
                 }}
               />
             </div>
@@ -231,10 +231,8 @@ function AddEditTask({
           </button>
         </div>
         {/* Current Status */}
-
         <div className="mt-8 flex flex-col space-y-3">
           <label className="text-sm dark:text-white text-gray-500">
-            {" "}
             Current Status
           </label>
           <select

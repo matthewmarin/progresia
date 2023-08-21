@@ -6,9 +6,10 @@ import Subtask from "../components/Subtask";
 import boardsSlice from "../redux/boardsSlice";
 import DeleteModal from "./DeleteModal";
 import AddEditTask from "./AddEditTask";
-import { fetchSubtasksForTask } from "../utils/api";
+import { fetchSubtasksForTask, updateSubtaskCompletion } from "../utils/api";
 
 function TaskModal({ colIndex, taskIndex, setIsTaskModalOpen }) {
+  const [newTaskName, setNewTaskName] = useState("");
   const dispatch = useDispatch();
   const boards = useSelector((state) => state.boards);
   const board = boards.find((board) => board.isActive);
@@ -18,6 +19,25 @@ function TaskModal({ colIndex, taskIndex, setIsTaskModalOpen }) {
 
   const [subtasks, setSubtasks] = useState([]);
   const [completed, setCompleted] = useState(0);
+
+  const handleSubtaskCompletionChange = async (subtaskId, isCompleted) => {
+    try {
+      // Update the subtask completion status
+      await updateSubtaskCompletion(task.id, subtaskId, isCompleted);
+
+      // Fetch updated subtasks data and set state
+      const updatedSubtasks = await fetchSubtasksForTask(task.id);
+      setSubtasks(updatedSubtasks);
+
+      // Calculate the completed subtasks count
+      const completedCount = updatedSubtasks.filter(
+        (subtask) => subtask.isCompleted
+      ).length;
+      setCompleted(completedCount);
+    } catch (error) {
+      console.error("Error updating subtask completion:", error);
+    }
+  };
 
   useEffect(() => {
     async function fetchSubtasks() {
@@ -94,9 +114,16 @@ function TaskModal({ colIndex, taskIndex, setIsTaskModalOpen }) {
         index={i}
         taskIndex={taskIndex}
         colIndex={colIndex}
+        onCompletionChange={handleSubtaskCompletionChange}
       />
     ));
   }
+
+  const handleUpdateTaskName = () => {
+    if (newTaskName.trim() !== "") {
+      updateTaskName(newTaskName);
+    }
+  };
 
   return (
     <div

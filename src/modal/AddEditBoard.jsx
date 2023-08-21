@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import { RxCross1 } from "react-icons/rx";
 import { useDispatch, useSelector } from "react-redux";
 import boardsSlice from "../redux/boardsSlice";
+import axios from "axios";
 
 function AddEditBoard({ setBoardModalOpen, type }) {
   const dispatch = useDispatch();
@@ -55,12 +56,30 @@ function AddEditBoard({ setBoardModalOpen, type }) {
     return true;
   };
 
-  const onSubmit = (type) => {
+  const onSubmit = async (type) => {
     setBoardModalOpen(false);
+
     if (type === "add") {
       dispatch(boardsSlice.actions.addBoard({ name, newColumns }));
     } else {
-      dispatch(boardsSlice.actions.editBoard({ name, newColumns }));
+      try {
+        const activeBoard = boards.find((board) => board.isActive);
+        if (!activeBoard) return;
+
+        const updatedBoard = {
+          ...activeBoard,
+          name: name,
+        };
+
+        await axios.put(
+          `http://localhost:8000/api/v1/boards/${activeBoard.id}`,
+          updatedBoard
+        );
+
+        dispatch(boardsSlice.actions.editBoard({ name, newColumns }));
+      } catch (error) {
+        console.error("Error updating board:", error);
+      }
     }
   };
 

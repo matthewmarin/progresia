@@ -180,7 +180,7 @@ function TaskModal({ colIndex, taskIndex, setIsTaskModalOpen }) {
           setOpenAddEditTask={setIsAddTaskModalOpen}
           type="edit"
           taskIndex={taskIndex}
-          pervColIndex={colIndex}
+          prevColIndex={colIndex}
           taskId={task.id}
           setIsTaskModalOpen={setIsTaskModalOpen}
         />

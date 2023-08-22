@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
 import { RxCross1 } from "react-icons/rx";
 import { useDispatch, useSelector } from "react-redux";
 import boardsSlice from "../redux/boardsSlice";
@@ -22,24 +21,52 @@ function AddEditBoard({ setBoardModalOpen, type }) {
 
       setNewColumns(
         board.columns.map((col) => {
-          return { ...col, id: uuidv4() };
+          return { ...col, id: "" };
         })
       );
       setName(board.name);
     }
   }, [boards]);
 
-  const onChange = (id, newValue) => {
-    setNewColumns((pervState) => {
-      const newState = [...pervState];
-      const column = newState.find((col) => col.id === id);
-      column.name = newValue;
+  const onChange = (id, newValue, column) => {
+    console.log(id);
+    console.log(newValue);
+    console.log(column);
+    setNewColumns((prevState) => {
+      const newState = prevState.map((col) => {
+        if (col.id === id) {
+          return { ...col, name: newValue };
+        }
+        return col;
+      });
+      const updatedColumn = newState.find((col) => col.id === id);
+      if (updatedColumn && updatedColumn.id) {
+        axios
+          .patch(`http://localhost:8000/api/v1/columns/${column.id}`, {
+            name: newValue,
+          })
+          .then((response) => {
+            console.log("Column name updated successfully:", response.data);
+          })
+          .catch((error) => {
+            console.error("Error updating column name:", error);
+          });
+      }
+
       return newState;
     });
   };
 
-  const onDelete = (id) => {
-    setNewColumns((perState) => perState.filter((el) => el.id !== id));
+  const onDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:8000/api/v1/columns/${id}`);
+
+      setNewColumns((perState) =>
+        perState.filter((column) => column.id !== id)
+      );
+    } catch (error) {
+      console.error("Error deleting column:", error);
+    }
   };
 
   const validate = () => {
@@ -62,16 +89,16 @@ function AddEditBoard({ setBoardModalOpen, type }) {
     if (type === "add") {
       const newBoard = {
         name,
+        userId: 1,
         columns: newColumns,
       };
-      console.log(newBoard);
       try {
         const response = await axios.post(
           "http://localhost:8000/api/v1/boards",
           newBoard
         );
 
-        dispatch(boardsSlice.actions.addBoard(response.data));
+        dispatch(boardsSlice.actions.addBoard(response.data.data));
       } catch (error) {
         console.error("Error creating board:", error);
       }
@@ -89,6 +116,7 @@ function AddEditBoard({ setBoardModalOpen, type }) {
           `http://localhost:8000/api/v1/boards/${activeBoard.id}`,
           updatedBoard
         );
+        console.log(updatedBoard);
 
         dispatch(boardsSlice.actions.editBoard({ name, newColumns }));
       } catch (error) {
@@ -146,7 +174,7 @@ function AddEditBoard({ setBoardModalOpen, type }) {
                 className="bg-transparent flex-grow px-4 py-2 rounded-md
                     text-sm border border-gray-600 outline-none focus:outline-[#d8c648] dark:focus:outline-[#33c6d8]"
                 onChange={(e) => {
-                  onChange(column.id, e.target.value);
+                  onChange(column.id, e.target.value, column);
                 }}
                 value={column.name}
                 type="text"
@@ -168,7 +196,7 @@ function AddEditBoard({ setBoardModalOpen, type }) {
             onClick={() => {
               setNewColumns((prevState) => [
                 ...prevState,
-                { name: "", tasks: [], id: uuidv4() },
+                { name: "", tasks: [], id: "" },
               ]);
             }}
           >

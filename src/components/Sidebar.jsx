@@ -63,6 +63,8 @@ function Sidebar({ setIsSideBarOpen, isSideBarOpen }) {
 
                         // Fetch columns and tasks for the selected board
                         const selectedBoard = boards[index];
+                        console.log(boards);
+                        console.log(index);
                         try {
                           const columnsAndTasksData =
                             await fetchColumnsAndTasks(selectedBoard.id);

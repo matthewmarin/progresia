@@ -14,6 +14,7 @@ const boardsSlice = createSlice({
       const isActive = newState.length > 0 ? false : true;
       const payload = action.payload;
       const board = {
+        id: payload.id,
         name: payload.name,
         isActive,
         columns: [],
@@ -31,18 +32,24 @@ const boardsSlice = createSlice({
     },
 
     editBoard: (state, action) => {
-      const newState = [...state];
-      const payload = action.payload;
-      const boardIndex = newState.findIndex((board) => board.isActive);
-      newState[boardIndex] = {
-        name: payload.name,
-        columns: payload.newColumns,
-        isActive: newState[boardIndex].isActive,
-      };
+      const { id, name, newColumns } = action.payload;
 
-      console.log("editBoard", newState);
-      return newState;
+      const activeBoardIndex = state.findIndex((board) => board.isActive);
+
+      if (activeBoardIndex !== -1) {
+        const updatedActiveBoard = {
+          ...state[activeBoardIndex],
+          id,
+          name: name,
+          columns: newColumns,
+        };
+
+        state[activeBoardIndex] = updatedActiveBoard;
+      }
+
+      console.log("editBoard", state);
     },
+
     deleteBoard: (state) => {
       const newState = [...state];
       const board = newState.find((board) => board.isActive);

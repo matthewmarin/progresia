@@ -24,13 +24,9 @@ const LoginForm = ({ onLogin }) => {
   };
 
   const onSubmit = () => {
-    // Simulate authentication logic here
     if (form.email === "1" && form.password === "1") {
-      // Call the provided onLogin callback
       onLogin();
     } else {
-      // Handle authentication failure
-      // You can show an error message or perform other actions here
     }
   };
 

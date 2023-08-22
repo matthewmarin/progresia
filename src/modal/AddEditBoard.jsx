@@ -115,6 +115,29 @@ function AddEditBoard({ setBoardModalOpen, type }) {
           name: name,
         };
 
+        const newAddedColumns = newColumns.filter((col) => !col.id);
+        if (newAddedColumns.length > 0) {
+          const addedColumnsData = newAddedColumns.map((col) => ({
+            name: col.name,
+            boardId: activeBoard.id,
+          }));
+          await Promise.all(
+            addedColumnsData.map(async (colData) => {
+              try {
+                const response = await axios.post(
+                  "http://localhost:8000/api/v1/columns",
+                  colData
+                );
+                console.log("New column created:", response);
+              } catch (error) {
+                console.error("Error creating column:", error);
+              }
+            })
+          );
+        }
+
+        const existingColumnsToUpdate = newColumns.filter((col) => col.id);
+
         await axios.patch(
           `http://localhost:8000/api/v1/boards/${activeBoard.id}`,
           updatedBoard

@@ -46,7 +46,7 @@ function Header({ boardModalOpen, setBoardModalOpen }) {
   };
 
   const handleLogout = () => {
-    window.location.href = "/login";
+    window.location.href = "/progresia";
   };
 
   const onDeleteBoard = async () => {

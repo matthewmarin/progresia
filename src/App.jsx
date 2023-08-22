@@ -18,16 +18,14 @@ function App() {
 
   const [boardModalOpen, setBoardModalOpen] = useState(false);
 
-  // Simulate user authentication (replace with your actual authentication logic)
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const handleLogin = () => {
-    setIsAuthenticated(true); // Set authentication state to true
+    setIsAuthenticated(true);
   };
 
   return (
     <div className="overflow-hidden">
       {isAuthenticated ? (
-        // Render main content if authenticated
         <>
           {boards.length > 0 ? (
             <>

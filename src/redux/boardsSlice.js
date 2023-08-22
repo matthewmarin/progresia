@@ -21,8 +21,6 @@ const boardsSlice = createSlice({
       };
       board.columns = payload.newColumns;
       newState.push(board);
-
-      console.log("addBoard", newState);
       return newState;
     },
 
@@ -32,22 +30,20 @@ const boardsSlice = createSlice({
     },
 
     editBoard: (state, action) => {
-      const { id, name, newColumns } = action.payload;
+      const { boardId, name, newColumns } = action.payload;
 
       const activeBoardIndex = state.findIndex((board) => board.isActive);
 
       if (activeBoardIndex !== -1) {
         const updatedActiveBoard = {
           ...state[activeBoardIndex],
-          id,
+          boardId,
           name: name,
           columns: newColumns,
         };
 
         state[activeBoardIndex] = updatedActiveBoard;
       }
-
-      console.log("editBoard", state);
     },
 
     deleteBoard: (state) => {
@@ -63,8 +59,6 @@ const boardsSlice = createSlice({
           : (board.isActive = false);
         return board;
       });
-
-      console.log("setBoardActive", state);
     },
     addTask: (state, action) => {
       const { title, status, description, subtasks, newColIndex } =
@@ -105,18 +99,15 @@ const boardsSlice = createSlice({
           }
         }
       });
-
-      console.log("editTask", state);
     },
 
     setBoards: (state, action) => {
-      return action.payload; // Assuming payload is an array of boards
+      return action.payload;
     },
 
     setSubtaskCompleted: (state, action) => {
       const { colIndex, taskIndex, subtaskIndex } = action.payload;
 
-      // Find the active board
       const activeBoard = state.find((board) => board.isActive);
 
       if (activeBoard) {
@@ -129,7 +120,6 @@ const boardsSlice = createSlice({
             const subtask = task.subtasks[subtaskIndex];
 
             if (subtask) {
-              // Toggle the completion status
               subtask.isCompleted = !subtask.isCompleted;
             }
           }

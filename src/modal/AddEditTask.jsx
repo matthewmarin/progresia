@@ -116,10 +116,8 @@ function AddEditTask({
           taskIndex,
         };
         dispatch(editTask(editedTask));
-        console.log(editedTask);
       } else {
         dispatch(addTask(taskData));
-        console.log(taskData);
       }
 
       try {

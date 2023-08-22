@@ -19,9 +19,10 @@ function AddEditBoard({ setBoardModalOpen, type }) {
     if (type === "edit") {
       const board = boards.find((board) => board.isActive);
 
+      // Initialize newColumns with proper IDs
       setNewColumns(
         board.columns.map((col) => {
-          return { ...col, id: "" };
+          return { ...col };
         })
       );
       setName(board.name);
@@ -29,9 +30,6 @@ function AddEditBoard({ setBoardModalOpen, type }) {
   }, [boards]);
 
   const onChange = (id, newValue, column) => {
-    console.log(id);
-    console.log(newValue);
-    console.log(column);
     setNewColumns((prevState) => {
       const newState = prevState.map((col) => {
         if (col.id === id) {
@@ -39,14 +37,19 @@ function AddEditBoard({ setBoardModalOpen, type }) {
         }
         return col;
       });
+
+      // Find the updated column by ID
       const updatedColumn = newState.find((col) => col.id === id);
+
       if (updatedColumn && updatedColumn.id) {
+        // Make the axios call with updatedColumn.id
         axios
-          .patch(`http://localhost:8000/api/v1/columns/${column.id}`, {
+          .patch(`http://localhost:8000/api/v1/columns/${updatedColumn.id}`, {
             name: newValue,
+            id: updatedColumn.id,
           })
           .then((response) => {
-            console.log("Column name updated successfully:", response.data);
+            console.log("Column name updated successfully:");
           })
           .catch((error) => {
             console.error("Error updating column name:", error);
@@ -116,8 +119,6 @@ function AddEditBoard({ setBoardModalOpen, type }) {
           `http://localhost:8000/api/v1/boards/${activeBoard.id}`,
           updatedBoard
         );
-        console.log(updatedBoard);
-
         dispatch(boardsSlice.actions.editBoard({ name, newColumns }));
       } catch (error) {
         console.error("Error updating board:", error);

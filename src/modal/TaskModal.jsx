@@ -50,7 +50,6 @@ function TaskModal({ colIndex, taskIndex, setIsTaskModalOpen }) {
 
   useEffect(() => {
     async function fetchSubtasks() {
-      console.log("Task:", task);
       try {
         const subtasksData = await fetchSubtasksForTask(task.id);
 

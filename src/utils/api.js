@@ -12,12 +12,10 @@ export const fetchBoards = async (dispatch) => {
 };
 
 export const fetchColumnsAndTasks = async (boardId) => {
-  console.log("fetchColumnsAndTasks", boardId);
   try {
     const response = await axios.get(
       `http://localhost:8000/api/v1/boards/${boardId}`
     );
-    console.log(response.data.data);
     const columnsAndTasksData = response.data.data.columns;
     return columnsAndTasksData;
   } catch (error) {

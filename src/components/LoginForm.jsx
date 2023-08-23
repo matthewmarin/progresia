@@ -4,13 +4,14 @@ import LogoImg from "../assets/logo.png";
 import ImageEl from "../components/ImageEl";
 
 const initForm = {
-  email: "",
+  username: "",
   password: "",
 };
 
 const LoginForm = ({ onLogin }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [form, setForm] = useState(initForm);
+  const [showInvalidAlert, setShowInvalidAlert] = useState(false);
 
   const authText = isLogin
     ? "Do not have an account?"
@@ -24,10 +25,11 @@ const LoginForm = ({ onLogin }) => {
   };
 
   const onSubmit = () => {
-    if (form.email === "1" && form.password === "1") {
+    if (form.username === "Thewmat" && form.password === "qwerty123") {
       onLogin();
     } else {
     }
+    setShowInvalidAlert(true);
   };
 
   return (
@@ -51,10 +53,10 @@ const LoginForm = ({ onLogin }) => {
       </Stack>
       <Stack spacing={2}>
         <TextField
-          value={form.email}
-          name="email"
-          onChange={(e) => handleInputChange(e, "email")}
-          label="Email"
+          value={form.username}
+          name="username"
+          onChange={(e) => handleInputChange(e, "username")}
+          label="Username"
         />
         <TextField
           value={form.password}
@@ -65,7 +67,7 @@ const LoginForm = ({ onLogin }) => {
         />
         <Button
           onClick={onSubmit}
-          disabled={!form.email.trim() || !form.password.trim()}
+          disabled={!form.username.trim() || !form.password.trim()}
           size="large"
           variant="contained"
         >
@@ -82,6 +84,11 @@ const LoginForm = ({ onLogin }) => {
       >
         {authText}
       </Typography>
+      {showInvalidAlert && (
+        <Typography color="error" textAlign="center" mt={2}>
+          Invalid username or password. Please try again.
+        </Typography>
+      )}
     </Container>
   );
 };

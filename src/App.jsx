@@ -4,7 +4,6 @@ import Center from "./components/Center";
 import { useDispatch, useSelector } from "react-redux";
 import EmptyBoard from "./components/EmptyBoard";
 import LoginForm from "./components/LoginForm";
-import axios from "axios";
 import { fetchBoards } from "./utils/api";
 
 function App() {
@@ -19,6 +18,7 @@ function App() {
   const [boardModalOpen, setBoardModalOpen] = useState(false);
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   const handleLogin = () => {
     setIsAuthenticated(true);
   };

@@ -12,20 +12,21 @@ function AddEditBoard({ setBoardModalOpen, type }) {
 
   const [newColumns, setNewColumns] = useState([
     { name: "Todo", tasks: [], id: "" },
-    { name: "Doing", tasks: [], id: "" },
   ]);
 
   useEffect(() => {
     if (type === "edit") {
       const board = boards.find((board) => board.isActive);
 
-      // Initialize newColumns with proper IDs
-      setNewColumns(
-        board.columns.map((col) => {
-          return { ...col };
-        })
-      );
-      setName(board.name);
+      if (board && board.columns) {
+        // Initialize newColumns with proper IDs
+        setNewColumns(
+          board.columns.map((col) => {
+            return { ...col };
+          })
+        );
+        setName(board.name);
+      }
     }
   }, [boards]);
 
@@ -96,12 +97,38 @@ function AddEditBoard({ setBoardModalOpen, type }) {
         columns: newColumns,
       };
       try {
-        const response = await axios.post(
+        const boardResponse = await axios.post(
           "http://localhost:8000/api/v1/boards",
           newBoard
         );
 
-        dispatch(boardsSlice.actions.addBoard(response.data.data));
+        const boardData = boardResponse.data.data;
+        dispatch(boardsSlice.actions.addBoard(boardData));
+
+        // Create columns for the newly created board
+        const columnsToCreate = newColumns.map((col) => ({
+          name: col.name,
+          boardId: boardData.id,
+        }));
+
+        const createdColumns = await Promise.all(
+          columnsToCreate.map(async (colData) => {
+            try {
+              const response = await axios.post(
+                "http://localhost:8000/api/v1/columns",
+                colData
+              );
+              return response.data.data;
+            } catch (error) {
+              console.error("Error creating column:", error);
+              return null;
+            }
+          })
+        );
+
+        // Filter out null values (failed column creations) and update the newColumns state
+        const filteredColumns = createdColumns.filter((col) => col !== null);
+        setNewColumns(filteredColumns);
       } catch (error) {
         console.error("Error creating board:", error);
       }
